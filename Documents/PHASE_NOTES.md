@@ -32,3 +32,32 @@ Lessons and outcomes from each implementation phase.
 - Verifier: Phase 1 checklist validated. Build and tests pass.
 - Note: `environment.example.ts` exists at `musani-wear/src/environments/`; README instructions are correct.
 - Bundle size warning (~500 kB budget exceeded) — address in Phase 5 polish.
+
+---
+
+## Phase 2 — Firebase Services — 2026-03-08
+
+### Completed
+- [x] Task 2.1 — Define TypeScript models (Product, Category, AppSettings, User)
+- [x] Task 2.2 — Auth with NgRx Store (actions, reducer, effects, selectors)
+- [x] Task 2.3 — ProductService with full CRUD
+- [x] Task 2.4 — CategoryService with CRUD
+- [x] Task 2.5 — ImageService with compression (browser-image-compression)
+- [x] Task 2.6 — SettingsService
+- [x] Task 2.7 — WhatsAppService
+- [x] Task 2.8 — Firestore security rules
+- [x] Task 2.9 — Storage security rules
+- [x] Task 2.10 — NgRx Store (products, categories, auth)
+- [x] Jest unit tests for all utils and services
+
+### Lessons Learned
+- Subagents (generalPurpose, test-runner, security-auditor, verifier) handled each task cleanly.
+- ProductService getFeaturedProducts requires Firestore composite index: featured, available, createdAt.
+- Security audit recommended Storage rules: file size (5 MB), content-type (image/*), path validation — applied.
+
+### Blockers Resolved
+- Firebase deploy required `firebase use` to set active project; added default to .firebaserc.
+
+### Verification
+- Verifier: Phase 2 checklist validated. 137 tests pass, ng build succeeds.
+- Security-auditor: Rules reviewed; Storage hardening applied.
