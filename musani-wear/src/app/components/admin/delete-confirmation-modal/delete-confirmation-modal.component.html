@@ -1,0 +1,45 @@
+@if (isOpen()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/50 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="delete-modal-title"
+    aria-describedby="delete-modal-desc"
+    (click)="onCancel()"
+  >
+    <div
+      class="bg-white rounded-lg shadow-lg max-w-md w-full p-6"
+      (click)="onModalClick($event)"
+    >
+      <h2
+        id="delete-modal-title"
+        class="text-xl font-display font-bold text-charcoal mb-2"
+      >
+        {{ title() }}
+      </h2>
+      <p
+        id="delete-modal-desc"
+        class="text-gray-600 mb-6"
+      >
+        {{ message() }}
+      </p>
+      <div class="flex justify-end gap-3">
+        <button
+          type="button"
+          (click)="onCancel()"
+          class="btn-secondary min-h-[48px]"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="onConfirm()"
+          class="px-6 py-3 bg-error text-white font-semibold rounded transition hover:opacity-90
+                 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 min-h-[48px]"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+}

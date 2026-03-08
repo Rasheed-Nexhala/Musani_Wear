@@ -1,0 +1,148 @@
+<div class="max-w-6xl mx-auto px-4 md:px-8 py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <h1 class="text-3xl font-display font-bold text-charcoal">Products</h1>
+    <a
+      routerLink="/admin/products/new"
+      class="btn-primary inline-flex items-center justify-center min-h-[48px] w-fit"
+    >
+      Add Product
+    </a>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+    @if (products$ | async; as products) {
+      @if (products.length > 0) {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-border">
+            <thead class="bg-cream">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
+                >
+                  Image
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
+                >
+                  Name
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
+                >
+                  Category
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
+                >
+                  Price
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="px-4 py-3 text-right text-sm font-semibold text-charcoal"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-border">
+              @for (product of products; track product.id ?? $index) {
+                <tr class="hover:bg-cream/50 transition-colors">
+                  <td class="px-4 py-3">
+                    @if (product.images.length) {
+                      <img
+                        [src]="product.images[0]"
+                        [alt]="product.name"
+                        class="w-14 h-14 object-cover rounded-md"
+                      />
+                    } @else {
+                      <div
+                        class="w-14 h-14 bg-border rounded-md flex items-center justify-center text-text-light text-xs"
+                      >
+                        No image
+                      </div>
+                    }
+                  </td>
+                  <td class="px-4 py-3 font-medium text-charcoal">
+                    {{ product.name }}
+                  </td>
+                  <td class="px-4 py-3 text-gray-600">
+                    {{ getCategoryName(product.categoryId) }}
+                  </td>
+                  <td class="px-4 py-3 text-gold font-semibold">
+                    {{ formatPrice(product.price) }}
+                  </td>
+                  <td class="px-4 py-3">
+                    <span
+                      class="inline-block px-3 py-1 rounded-full font-body text-sm font-semibold"
+                      [class.bg-success]="product.available"
+                      [class.text-white]="product.available"
+                      [class.bg-error]="!product.available"
+                      [class.text-white]="!product.available"
+                    >
+                      {{ product.available ? 'In Stock' : 'Out of Stock' }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 text-right">
+                    <div class="flex items-center justify-end gap-2">
+                      @if (product.id) {
+                        <a
+                          [routerLink]="['/admin/products', product.id, 'edit']"
+                          class="text-gold hover:opacity-80 font-medium text-sm"
+                        >
+                          Edit
+                        </a>
+                        <button
+                          type="button"
+                          (click)="deleteProduct(product)"
+                          class="px-3 py-1.5 text-sm font-medium text-error hover:bg-error/10 rounded transition"
+                        >
+                          Delete
+                        </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <div class="p-12 text-center text-gray-600">
+          <p class="text-lg font-medium mb-2">No products yet.</p>
+          <a
+            routerLink="/admin/products/new"
+            class="btn-primary inline-flex items-center justify-center mt-4"
+          >
+            Add your first product
+          </a>
+        </div>
+      }
+    } @else {
+      <div class="p-12 text-center">
+        <div
+          class="inline-block w-8 h-8 rounded-full border-2 border-border border-t-gold animate-spin"
+          aria-hidden="true"
+        ></div>
+        <p class="mt-2 text-gray-600">Loading products…</p>
+      </div>
+    }
+  </div>
+
+  <app-delete-confirmation-modal
+    [isOpen]="deleteModalOpen"
+    title="Delete Product"
+    message="Are you sure you want to delete this product?"
+    (confirmed)="onDeleteConfirmed()"
+    (cancelled)="closeDeleteModal()"
+  />
+</div>

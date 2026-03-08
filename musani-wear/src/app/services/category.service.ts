@@ -93,8 +93,10 @@ export class CategoryService {
     );
   }
 
-  /** Create a new category. Returns the new document ID. */
-  createCategory(category: Omit<Category, 'id'>): Observable<string> {
+  /** Create a new category. Returns the new document ID. Timestamps are set by the service. */
+  createCategory(
+    category: Omit<Category, 'id' | 'createdAt' | 'updatedAt'>
+  ): Observable<string> {
     const now = Timestamp.now();
     const payload = {
       ...category,
