@@ -1,9 +1,11 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
+import { Firestore } from '@angular/fire/firestore';
 import { App } from './app';
 import { AuthService } from './services/auth.service';
 import { SeedService } from './services/seed.service';
+import { SettingsService } from './services/settings.service';
 
 jest.mock('@angular/fire/auth', () => ({
   Auth: {},
@@ -23,6 +25,7 @@ jest.mock('@angular/fire/firestore', () => ({
 describe('App', () => {
   const mockSeedService = { seedCategories: jest.fn().mockResolvedValue(undefined) };
   const mockAuthService = { isAuthenticated$: of(false) };
+  const mockSettingsService = { getSettings: jest.fn().mockReturnValue(of(null)) };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,6 +34,8 @@ describe('App', () => {
         provideRouter([]),
         { provide: SeedService, useValue: mockSeedService },
         { provide: AuthService, useValue: mockAuthService },
+        { provide: Firestore, useValue: {} },
+        { provide: SettingsService, useValue: mockSettingsService },
       ],
     }).compileComponents();
   });

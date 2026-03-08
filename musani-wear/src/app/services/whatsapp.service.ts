@@ -56,6 +56,22 @@ export class WhatsAppService {
    * // Without phone (async - uses settings)
    * getProductInquiryUrl(product, 'Blue').subscribe(url => window.open(url))
    */
+  /**
+   * Returns a wa.me URL for general inquiries (e.g. from Home page CTA).
+   * Fetches business WhatsApp from SettingsService and uses a generic message.
+   *
+   * @returns Observable of full wa.me URL, or empty string if no phone configured
+   */
+  generateGeneralInquiryUrl(): Observable<string> {
+    const message = "Hi! I'm interested in your collections. Could you help me?";
+    return this.settingsService.getSettings().pipe(
+      map((settings) => {
+        const phone = settings?.whatsappNumber?.trim() ?? '';
+        return phone ? this.getWhatsAppUrl(phone, message) : '';
+      })
+    );
+  }
+
   getProductInquiryUrl(
     product: Product,
     color?: string,

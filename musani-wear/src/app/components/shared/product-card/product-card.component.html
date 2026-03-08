@@ -1,0 +1,62 @@
+<a
+  [routerLink]="['/product', product.id]"
+  class="group block cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+>
+  <!-- Image Container (3:4 aspect ratio) -->
+  <div class="relative bg-border overflow-hidden aspect-[3/4]">
+    @if ((product.images ?? []).length) {
+      <img
+        [src]="product.images[0]"
+        [alt]="product.name"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+      />
+    } @else {
+      <!-- Placeholder when no images -->
+      <div
+        class="w-full h-full flex items-center justify-center bg-cream text-charcoal/40 font-body text-sm"
+        aria-hidden="true"
+      >
+        No image
+      </div>
+    }
+
+    <!-- Out of Stock overlay -->
+    @if (!product.available) {
+      <div
+        class="absolute inset-0 bg-charcoal/50 flex items-center justify-center"
+        aria-label="Out of stock"
+      >
+        <span
+          class="inline-block bg-error text-white px-4 py-2 rounded-full font-body text-sm font-semibold"
+        >
+          Out of Stock
+        </span>
+      </div>
+    }
+  </div>
+
+  <!-- Product Info -->
+  <div class="p-4">
+    @if (categoryName) {
+      <p class="text-sm text-gray-500 uppercase tracking-wide">{{ categoryName }}</p>
+    }
+    <h3 class="text-lg font-display font-bold text-charcoal line-clamp-2 mt-1">
+      {{ product.name }}
+    </h3>
+    <p class="text-xl font-bold text-gold mt-2">{{ formatPrice(product.price) }}</p>
+
+    <!-- Color Swatches -->
+    @if ((product.colors ?? []).length) {
+      <div class="mt-4 flex gap-2 flex-wrap">
+        @for (color of product.colors; track color.name) {
+          <span
+            [style.backgroundColor]="color.hex"
+            [attr.title]="color.name"
+            class="block w-6 h-6 rounded-full border-2 border-border shrink-0"
+            [attr.aria-label]="'Color: ' + color.name"
+          ></span>
+        }
+      </div>
+    }
+  </div>
+</a>

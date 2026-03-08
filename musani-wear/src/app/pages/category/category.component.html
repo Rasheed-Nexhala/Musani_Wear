@@ -1,0 +1,76 @@
+@if (pageState$ | async; as state) {
+  @if (state.category === null) {
+    <!-- Category not found -->
+    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+      <div class="text-center py-16">
+        <h2 class="text-2xl font-display font-bold text-charcoal mb-4">
+          Category not found
+        </h2>
+        <p class="text-gray-600 font-body mb-6">
+          The category you're looking for doesn't exist or may have been removed.
+        </p>
+        <a
+          routerLink="/shop"
+          class="inline-block px-6 py-3 bg-gold text-charcoal font-semibold rounded-full hover:opacity-90 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 min-h-[48px]"
+        >
+          Browse all products
+        </a>
+      </div>
+    </main>
+  } @else if (state.productsStatus === 'loading') {
+    <!-- Loading products -->
+    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+      <p class="text-center text-charcoal font-body py-12">
+        Loading products...
+      </p>
+    </main>
+  } @else {
+    <!-- Header: category name and description with gold gradient -->
+    <header
+      class="bg-gradient-to-br from-gold to-yellow-600 py-12 md:py-16"
+      [attr.aria-labelledby]="'category-heading-' + state.category.slug"
+    >
+      <div class="max-w-7xl mx-auto px-4">
+        <h1
+          [id]="'category-heading-' + state.category.slug"
+          class="text-3xl md:text-4xl font-display font-bold text-charcoal"
+        >
+          {{ state.category.name }}
+        </h1>
+        @if (state.category.description) {
+          <p class="mt-4 text-charcoal/90 font-body text-base md:text-lg max-w-2xl">
+            {{ state.category.description }}
+          </p>
+        }
+      </div>
+    </header>
+
+    <!-- Product grid -->
+    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+      @if (state.products.length === 0) {
+        <p class="text-center text-charcoal font-body py-12">
+          No products in this category yet.
+        </p>
+      } @else {
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          role="list"
+        >
+          @for (product of state.products; track product.id ?? $index) {
+            <app-product-card
+              [product]="product"
+              [categoryName]="state.category.name"
+            />
+          }
+        </div>
+      }
+    </main>
+  }
+} @else {
+  <!-- Loading category (before first emission) -->
+  <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+    <p class="text-center text-charcoal font-body py-12">
+      Loading products...
+    </p>
+  </main>
+}
