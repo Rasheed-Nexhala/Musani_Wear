@@ -55,27 +55,122 @@
     </div>
   </aside>
 
-  <!-- Mobile top bar -->
+  <!-- Mobile top bar (same pattern as customer navbar) -->
   <div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-charcoal text-white px-4 py-3 flex items-center justify-between border-b border-white/10">
-    <a routerLink="/admin" class="font-display font-bold text-gold focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded min-h-[48px] flex items-center" aria-label="Musani Wear Admin - Home">Musani Wear</a>
-    <details class="relative">
-      <summary class="list-none cursor-pointer px-3 py-2 rounded hover:bg-white/10 min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2" aria-label="Open admin menu">
-        <span class="sr-only">Open menu</span>
+    <a
+      routerLink="/admin"
+      (click)="closeMobileMenu()"
+      class="font-display font-bold text-gold focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal rounded min-h-[48px] flex items-center"
+      aria-label="Musani Wear Admin - Home"
+    >
+      Musani Wear
+    </a>
+
+    <!-- Mobile Hamburger / Close X Button -->
+    <button
+      type="button"
+      class="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-md text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal"
+      (click)="toggleMobileMenu()"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      [attr.aria-label]="mobileMenuOpen() ? 'Close menu' : 'Open menu'"
+    >
+      @if (mobileMenuOpen()) {
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      } @else {
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
-      </summary>
-      <div class="absolute right-0 mt-2 w-48 bg-charcoal rounded-md shadow-lg border border-white/10 py-2">
-        <a routerLink="/admin" routerLinkActive="bg-gold/20 text-gold" [routerLinkActiveOptions]="{ exact: true }" class="admin-sidebar-link flex focus:ring-inset">Dashboard</a>
-        <a routerLink="/admin/products" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Products</a>
-        <a routerLink="/admin/categories" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Categories</a>
-        <a routerLink="/admin/settings" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Settings</a>
-        <button type="button" (click)="logout()" class="w-full text-left px-4 py-3 text-error hover:bg-error/20 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset" aria-label="Log out of admin panel">
-          Logout
-        </button>
-      </div>
-    </details>
+      }
+    </button>
   </div>
+
+  <!-- Mobile Drawer (slide-in menu, same as customer panel) -->
+  @if (mobileMenuOpen()) {
+    <div
+      class="fixed inset-0 z-30 lg:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Admin navigation menu"
+    >
+      <!-- Backdrop -->
+      <div
+        class="absolute inset-0 bg-charcoal/50"
+        (click)="closeMobileMenu()"
+        aria-hidden="true"
+      ></div>
+
+      <!-- Drawer Panel -->
+      <div
+        class="absolute top-0 right-0 w-64 max-w-[85vw] h-full bg-charcoal shadow-xl flex flex-col"
+      >
+        <!-- Header with close X button -->
+        <div class="flex items-center justify-between p-4 border-b border-white/10">
+          <span class="font-display font-bold text-gold">Admin Menu</span>
+          <button
+            type="button"
+            class="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-md text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset"
+            (click)="closeMobileMenu()"
+            aria-label="Close menu"
+          >
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Nav links -->
+        <nav class="flex-1 p-4 space-y-1" aria-label="Admin navigation">
+          <a
+            routerLink="/admin"
+            routerLinkActive="bg-gold/20 text-gold"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="closeMobileMenu()"
+            class="admin-sidebar-link flex"
+          >
+            Dashboard
+          </a>
+          <a
+            routerLink="/admin/products"
+            routerLinkActive="bg-gold/20 text-gold"
+            (click)="closeMobileMenu()"
+            class="admin-sidebar-link flex"
+          >
+            Products
+          </a>
+          <a
+            routerLink="/admin/categories"
+            routerLinkActive="bg-gold/20 text-gold"
+            (click)="closeMobileMenu()"
+            class="admin-sidebar-link flex"
+          >
+            Categories
+          </a>
+          <a
+            routerLink="/admin/settings"
+            routerLinkActive="bg-gold/20 text-gold"
+            (click)="closeMobileMenu()"
+            class="admin-sidebar-link flex"
+          >
+            Settings
+          </a>
+        </nav>
+
+        <!-- Logout -->
+        <div class="p-4 border-t border-white/10">
+          <button
+            type="button"
+            (click)="logout(); closeMobileMenu()"
+            class="w-full px-4 py-3 text-left rounded-md hover:bg-error/20 text-error/90 hover:text-error transition font-medium min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset"
+            aria-label="Log out of admin panel"
+          >
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 
   <!-- Main content (app shell provides main landmark) -->
   <div class="flex-1 min-w-0 pt-16 lg:pt-0" role="region" aria-label="Admin content">

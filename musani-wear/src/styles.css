@@ -163,7 +163,7 @@ h6 {
 }
 
 .admin-sidebar-link {
-  @apply block px-4 py-3 rounded-md hover:bg-white/10 transition font-medium min-h-[48px] items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal;
+  @apply block px-4 py-3 rounded-md text-white hover:bg-white/10 transition font-medium min-h-[48px] items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal;
 }
 
 /* Skip link: visually hidden until focused (keyboard users). Design system: WCAG 2.1 AA */
