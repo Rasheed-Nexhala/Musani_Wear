@@ -1,0 +1,70 @@
+<footer class="bg-charcoal text-white mt-20" role="contentinfo">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Brand -->
+      <div>
+        <h3 class="text-2xl font-display font-bold text-gold mb-4">
+          Musani Wear
+        </h3>
+        <p class="text-gray-300 font-body">
+          Exquisite dress collections for every occasion.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="font-semibold font-body mb-4">Quick Links</h4>
+        <ul class="space-y-2">
+          <li>
+            <a
+              routerLink="/shop"
+              class="text-gray-300 hover:text-gold transition-colors font-body"
+            >
+              Shop
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-gold transition-colors font-body"
+            >
+              About
+            </a>
+          </li>
+          <li>
+            <a
+              href="#"
+              class="text-gray-300 hover:text-gold transition-colors font-body"
+            >
+              Contact
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h4 class="font-semibold font-body mb-4">Contact</h4>
+        <p class="text-gray-300 font-body mb-4">
+          Reach out on WhatsApp for inquiries
+        </p>
+        <a
+          [href]="whatsappLink"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 bg-whatsapp text-white hover:opacity-90 px-4 py-2 rounded-full font-body font-semibold text-sm min-h-[44px] focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-2 focus:ring-offset-charcoal transition-opacity"
+          aria-label="Send WhatsApp message"
+        >
+          WhatsApp
+        </a>
+      </div>
+    </div>
+
+    <!-- Copyright -->
+    <div
+      class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 font-body text-sm"
+    >
+      <p>&copy; 2025 Musani Wear</p>
+    </div>
+  </div>
+</footer>

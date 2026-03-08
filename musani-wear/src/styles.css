@@ -1,1 +1,60 @@
-/* You can add global styles to this file, and also import other style files */
+@import 'tailwindcss';
+
+/* Musani Wear design tokens (Task 1.2) */
+@theme {
+  --color-gold: #d4af37;
+  --color-cream: #fff8dc;
+  --color-charcoal: #2c2c2c;
+  --color-border: #e8e0d5;
+  --color-whatsapp: #25d366;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* Global custom styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-body text-gray-900;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  @apply font-display font-bold;
+}
+
+/* Primary button: gold background, charcoal text */
+.btn-primary {
+  @apply px-6 py-3 bg-gold text-charcoal font-semibold rounded transition;
+}
+.btn-primary:hover {
+  @apply opacity-90;
+}
+
+/* Secondary button: outlined charcoal */
+.btn-secondary {
+  @apply px-6 py-3 border-2 border-charcoal text-charcoal rounded transition;
+}
+.btn-secondary:hover {
+  @apply bg-charcoal text-white;
+}
+
+/* Respect reduced motion preference (accessibility) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

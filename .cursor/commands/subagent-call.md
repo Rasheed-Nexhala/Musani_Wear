@@ -1,0 +1,1 @@
+Use a SUBAGENT to start with the given task use the Suggested prompt, ask if you have any doubts using your questioning tool and if any user input or action is needed stop and ask the user to complete it and the continue.

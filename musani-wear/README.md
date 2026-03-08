@@ -1,59 +1,86 @@
-# MusaniWear
+# Musani Wear - Development Guide
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.5.
+Musani Wear is an Angular e-commerce boutique website for dress showcase and admin management, built with Angular 20+, Firebase, and Tailwind CSS.
 
-## Development server
+## Prerequisites
 
-To start a local development server, run:
+- **Node.js** 18+ and npm
+- **Angular CLI** 20+
+- **Firebase CLI**
+- **Git**
 
-```bash
-ng serve
+## Setup Instructions
+
+1. **Clone repository**
+   ```bash
+   git clone <repo-url>
+   cd musani-wear
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Firebase**
+   - Copy `src/environments/environment.example.ts` to `src/environments/environment.ts`
+   - Add your Firebase config values (see `.env.example` for variable names)
+   - Optionally copy to `environment.prod.ts` for production
+
+4. **Run development server**
+   ```bash
+   ng serve
+   ```
+
+5. **Open browser** to [http://localhost:4200](http://localhost:4200)
+
+## Folder Structure
+
+```
+src/
+├── app/
+│   ├── pages/           # Page components (home, shop, category, product-detail, admin)
+│   ├── components/      # Reusable presentational components (navbar, footer)
+│   ├── services/        # Firebase services (auth, seed, data layer)
+│   ├── models/          # TypeScript interfaces
+│   ├── guards/          # Route guards (admin)
+│   ├── store/           # NgRx state (actions, reducers, effects, selectors)
+│   ├── utils/           # Pure functions (format, validate, parse)
+│   └── shared/          # Shared constants, helpers used across components
+├── environments/        # Firebase config (environment.ts, environment.prod.ts)
+└── styles.css           # Global Tailwind styles
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Available Scripts
 
-## Code scaffolding
+| Command | Description |
+|---------|-------------|
+| `ng serve` | Start development server |
+| `ng build` | Build for development |
+| `ng build --configuration production` | Production build |
+| `ng test` | Run unit tests |
+| `ng e2e` | Run end-to-end tests |
+| `firebase deploy` | Deploy to Firebase Hosting |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Firebase Rules
+
+Security rules for Firestore and Storage are defined in `firebase.json` and `firestore.rules` (or `storage.rules`). Ensure rules are configured before deploying to production.
+
+## Code Scaffolding
+
+Angular CLI includes powerful code scaffolding tools. To generate a new component:
 
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+For a complete list of available schematics (components, directives, pipes, etc.):
 
 ```bash
 ng generate --help
 ```
 
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
 ## Additional Resources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
+- [Firebase Console](https://console.firebase.google.com)
