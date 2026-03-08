@@ -61,14 +61,14 @@
                         <button
                           type="button"
                           (click)="editCategory(cat)"
-                          class="text-gold hover:opacity-80 font-medium text-sm"
+                          class="text-gold hover:opacity-80 font-medium text-sm min-h-[48px] min-w-[48px] inline-flex items-center justify-center px-3"
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           (click)="openDeleteModal(cat.id)"
-                          class="px-3 py-1.5 text-sm font-medium text-error hover:bg-error/10 rounded transition"
+                          class="px-4 py-2 text-sm font-medium text-error hover:bg-error/10 rounded transition min-h-[48px] min-w-[48px] inline-flex items-center justify-center"
                         >
                           Delete
                         </button>
@@ -107,11 +107,13 @@
 <!-- Add/Edit Category Modal -->
 @if (showCategoryForm()) {
   <div
+    appFocusTrap
     class="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/50 p-4"
     role="dialog"
     aria-modal="true"
     aria-labelledby="category-modal-title"
     (click)="closeCategoryForm()"
+    (keydown.escape)="closeCategoryForm()"
   >
     <div
       class="bg-white rounded-lg shadow-lg max-w-md w-full p-6"
@@ -146,7 +148,7 @@
               id="cat-name"
               type="text"
               formControlName="name"
-              class="w-full px-4 py-3 border-2 border-border rounded-md
+              class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                      focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
               [attr.aria-invalid]="hasError('name')"
               [attr.aria-describedby]="hasError('name') ? 'cat-name-error' : null"
@@ -169,7 +171,7 @@
               id="cat-slug"
               type="text"
               formControlName="slug"
-              class="w-full px-4 py-3 border-2 border-border rounded-md
+              class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                      focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20 font-mono text-sm"
               placeholder="e.g. evening-wear"
               [attr.aria-invalid]="hasError('slug')"
@@ -193,7 +195,7 @@
               id="cat-description"
               formControlName="description"
               rows="3"
-              class="w-full px-4 py-3 border-2 border-border rounded-md
+              class="w-full min-h-[80px] px-4 py-3 border-2 border-border rounded-md
                      focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
             ></textarea>
           </div>
@@ -210,7 +212,8 @@
               type="number"
               formControlName="order"
               min="0"
-              class="w-full px-4 py-3 border-2 border-border rounded-md
+              inputmode="numeric"
+              class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                      focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
             />
           </div>
@@ -220,7 +223,7 @@
           <button
             type="button"
             (click)="closeCategoryForm()"
-            class="btn-secondary min-h-[48px]"
+            class="btn-secondary min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
           >
             Cancel
           </button>

@@ -1,14 +1,14 @@
 <div class="bg-white min-h-screen">
   <!-- Breadcrumb -->
   <nav
-    class="max-w-7xl mx-auto px-4 py-4"
+    class="max-w-7xl mx-auto px-4 md:px-8 py-4"
     aria-label="Breadcrumb"
   >
-    <ol class="flex flex-wrap gap-2 text-sm font-body text-charcoal">
+    <ol class="flex flex-wrap gap-2 text-sm font-body text-charcoal items-center">
       <li>
         <a
           routerLink="/"
-          class="text-gold hover:underline focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded"
+          class="text-gold hover:underline focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded min-h-[48px] inline-flex items-center py-2"
         >
           Home
         </a>
@@ -17,7 +17,7 @@
       <li>
         <a
           routerLink="/shop"
-          class="text-gold hover:underline focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded"
+          class="text-gold hover:underline focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded min-h-[48px] inline-flex items-center py-2"
         >
           Shop
         </a>
@@ -36,7 +36,7 @@
   @if (productState$ | async; as state) {
     @if (!state.loaded) {
     <!-- Loading state -->
-    <main class="max-w-7xl mx-auto px-4 py-16" id="main">
+    <section class="max-w-7xl mx-auto px-4 py-16" aria-label="Loading product">
       <div class="flex flex-col items-center justify-center gap-4">
         <div
           class="animate-spin rounded-full border-2 border-border border-t-gold w-12 h-12"
@@ -44,12 +44,11 @@
         ></div>
         <p class="text-charcoal font-body">Loading product...</p>
       </div>
-    </main>
+    </section>
     } @else if (state.product; as product) {
     <!-- Product Section -->
-    <main
+    <section
       class="max-w-7xl mx-auto px-4 py-8 md:py-12"
-      id="main"
       aria-labelledby="product-heading"
     >
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
@@ -62,6 +61,9 @@
               <img
                 [src]="selectedImage || product.images[0]"
                 [alt]="product.name"
+                width="600"
+                height="800"
+                loading="eager"
                 class="w-full h-full object-cover"
               />
             } @else {
@@ -94,6 +96,9 @@
                   <img
                     [src]="img"
                     [alt]="product.name + ' thumbnail ' + ($index + 1)"
+                    width="64"
+                    height="80"
+                    loading="lazy"
                     class="w-full h-full object-cover"
                   />
                 </button>
@@ -105,7 +110,7 @@
         <!-- Product Info -->
         <div class="space-y-6">
           @if (categoryName$ | async; as categoryName) {
-            <p class="text-sm text-gold uppercase tracking-wide font-body">
+            <p class="text-sm text-amber-800 uppercase tracking-wide font-body">
               {{ categoryName }}
             </p>
           }
@@ -200,10 +205,10 @@
           }
         </div>
       </div>
-    </main>
+    </section>
     } @else {
     <!-- Product not found -->
-    <main class="max-w-7xl mx-auto px-4 py-16 text-center" id="main">
+    <section class="max-w-7xl mx-auto px-4 py-16 text-center" aria-label="Product not found">
       <h2 class="text-2xl font-display font-bold text-charcoal mb-4">
         Product not found
       </h2>
@@ -216,7 +221,7 @@
       >
         Back to Shop
       </a>
-    </main>
+    </section>
     }
   }
 </div>

@@ -1,10 +1,10 @@
 <!-- Header -->
 <header
-  class="bg-gray-50 border-b border-border py-8"
+  class="bg-gray-50 border-b border-border py-6 md:py-8 px-4 md:px-8"
   aria-labelledby="shop-heading"
 >
-  <div class="max-w-7xl mx-auto px-4">
-    <h1 id="shop-heading" class="text-4xl font-display font-bold text-charcoal">
+  <div class="max-w-7xl mx-auto">
+    <h1 id="shop-heading" class="text-2xl md:text-4xl font-display font-bold text-charcoal">
       Shop All Products
     </h1>
   </div>
@@ -12,13 +12,13 @@
 
 <!-- Category Filter Tabs -->
 <section class="bg-white border-b border-border" aria-label="Filter by category">
-  <div class="max-w-7xl mx-auto px-4 py-4">
+  <div class="max-w-7xl mx-auto px-4 md:px-8 py-4">
     @if (categories$ | async; as categories) {
-      <div class="flex flex-wrap gap-2">
+      <div class="flex flex-wrap gap-2 md:gap-3">
         <button
           type="button"
           (click)="setCategory(null)"
-          class="px-4 py-2 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+          class="px-4 py-3 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
           [class.bg-gold]="(selectedCategory$ | async) === null"
           [class.bg-cream]="(selectedCategory$ | async) !== null"
           [class.hover:bg-cream/80]="(selectedCategory$ | async) !== null"
@@ -29,7 +29,7 @@
           <button
             type="button"
             (click)="setCategory(category.id ?? null)"
-            class="px-4 py-2 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[44px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+            class="px-4 py-3 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
             [class.bg-gold]="(selectedCategory$ | async) === (category.id ?? '')"
             [class.bg-cream]="(selectedCategory$ | async) !== (category.id ?? '')"
             [class.hover:bg-cream/80]="(selectedCategory$ | async) !== (category.id ?? '')"
@@ -43,12 +43,15 @@
 </section>
 
 <!-- Product Grid -->
-<main class="max-w-7xl mx-auto px-4 py-12" id="main">
+<section class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12" aria-label="Product listing">
   @if (productsState$ | async; as state) {
-    @if (state.status === 'loading') {
-      <p class="text-center text-charcoal font-body py-12">
-        Loading products...
-      </p>
+    @if (state.status === 'error' && state.error) {
+      <app-error-display
+        [error]="state.error"
+        (retry)="onRetry()"
+      />
+    } @else if (state.status === 'loading') {
+      <app-loading-skeleton />
     } @else if (state.items.length === 0) {
       <p class="text-center text-charcoal font-body py-12">
         No products found in this category
@@ -67,4 +70,4 @@
       </div>
     }
   }
-</main>
+</section>

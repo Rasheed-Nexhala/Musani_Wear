@@ -51,3 +51,6 @@ src/environments/environment.*.ts
 
 # Logs
 *.log
+
+# Lighthouse reports (generated)
+lighthouse-report.html

@@ -5,10 +5,14 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
+    "serve:prod": "npx http-server dist/musani-wear/browser -p 8080 -c-1",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "audit": "npm run build:prod && npx lighthouse http://localhost:8080 --output=html --output-path=./lighthouse-report.html --chrome-flags='--headless --no-sandbox --disable-gpu' --only-categories=performance,accessibility,seo,best-practices --quiet",
+    "lighthouse": "npx lighthouse http://localhost:8080 --output=html --output-path=./lighthouse-report.html --view"
   },
   "prettier": {
     "printWidth": 100,

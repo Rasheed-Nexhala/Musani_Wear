@@ -1,9 +1,9 @@
-<div class="max-w-3xl mx-auto px-4 md:px-8 py-8">
-  <div class="flex items-center justify-between mb-8">
-    <h1 class="text-3xl font-display font-bold text-charcoal">
+<div class="max-w-3xl mx-auto px-4 md:px-8 py-6 md:py-8">
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 md:mb-8">
+    <h1 class="text-2xl md:text-3xl font-display font-bold text-charcoal">
       {{ isEdit() ? 'Edit Product' : 'Add Product' }}
     </h1>
-    <a routerLink="/admin/products" class="btn-secondary">Back to Products</a>
+    <a routerLink="/admin/products" class="btn-secondary w-fit min-h-[48px] inline-flex items-center">Back to Products</a>
   </div>
 
   @if (errorMessage()) {
@@ -28,7 +28,7 @@
         id="name"
         type="text"
         formControlName="name"
-        class="w-full px-4 py-3 border-2 border-border rounded-md
+        class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
         [attr.aria-invalid]="hasError('name')"
         [attr.aria-describedby]="hasError('name') ? 'name-error' : null"
@@ -45,7 +45,7 @@
         id="description"
         formControlName="description"
         rows="4"
-        class="w-full px-4 py-3 border-2 border-border rounded-md
+        class="w-full min-h-[120px] px-4 py-3 border-2 border-border rounded-md
                focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
         [attr.aria-invalid]="hasError('description')"
         [attr.aria-describedby]="hasError('description') ? 'desc-error' : null"
@@ -64,7 +64,8 @@
         formControlName="price"
         min="0"
         step="0.01"
-        class="w-full px-4 py-3 border-2 border-border rounded-md
+        inputmode="decimal"
+        class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
         [attr.aria-invalid]="hasError('price')"
       />
@@ -80,7 +81,7 @@
         id="material"
         type="text"
         formControlName="material"
-        class="w-full px-4 py-3 border-2 border-border rounded-md
+        class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
         [attr.aria-invalid]="hasError('material')"
       />
@@ -95,7 +96,7 @@
       <select
         id="categoryId"
         formControlName="categoryId"
-        class="w-full px-4 py-3 border-2 border-border rounded-md
+        class="w-full min-h-[48px] px-4 py-3 border-2 border-border rounded-md
                focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
         [attr.aria-invalid]="hasError('categoryId')"
       >
@@ -113,12 +114,12 @@
 
     <!-- Colors -->
     <div>
-      <div class="flex items-center justify-between mb-2">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
         <label class="block text-sm font-semibold text-charcoal">Colors</label>
         <button
           type="button"
           (click)="addColor()"
-          class="text-sm font-medium text-gold hover:opacity-80"
+          class="text-sm font-medium text-gold hover:opacity-80 min-h-[48px] inline-flex items-center w-fit"
         >
           + Add Color
         </button>
@@ -127,29 +128,31 @@
         @for (ctrl of colorsArray.controls; track $index; let i = $index) {
           <div
             [formGroupName]="i"
-            class="flex gap-3 items-center"
+            class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center"
           >
             <input
               type="text"
               formControlName="name"
               placeholder="Color name"
-              class="flex-1 px-4 py-2 border-2 border-border rounded-md
+              class="flex-1 min-h-[48px] px-4 py-2 border-2 border-border rounded-md
                      focus:border-gold focus:ring-2 focus:ring-gold focus:ring-opacity-20"
             />
-            <input
-              type="color"
-              formControlName="hex"
-              class="w-12 h-10 border-2 border-border rounded cursor-pointer"
-            />
-            <span class="w-24 px-2 py-2 text-sm text-gray-600">{{ colorsArray.at(i).get('hex')?.value }}</span>
-            <button
-              type="button"
-              (click)="removeColor(i)"
-              class="px-3 py-2 text-error hover:bg-error/10 rounded transition min-h-[44px] min-w-[44px]"
-              aria-label="Remove color"
-            >
-              Remove
-            </button>
+            <div class="flex gap-3 items-center">
+              <input
+                type="color"
+                formControlName="hex"
+                class="w-12 h-12 min-h-[48px] min-w-[48px] border-2 border-border rounded cursor-pointer shrink-0"
+              />
+              <span class="flex-1 min-w-0 px-2 py-2 text-sm text-gray-600 truncate">{{ colorsArray.at(i).get('hex')?.value }}</span>
+              <button
+                type="button"
+                (click)="removeColor(i)"
+                class="px-4 py-2 text-error hover:bg-error/10 rounded transition min-h-[48px] min-w-[48px] shrink-0"
+                aria-label="Remove color"
+              >
+                Remove
+              </button>
+            </div>
           </div>
         }
       </div>
@@ -159,6 +162,7 @@
     <div>
       <app-product-image-upload
         [existingImages]="existingImages()"
+        [productName]="form.get('name')?.value || ''"
         (imagesAdded)="onImagesAdded($event)"
         (imageRemoved)="onImageRemoved($event)"
       />

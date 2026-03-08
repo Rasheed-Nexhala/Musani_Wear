@@ -50,8 +50,23 @@ export class CategoryService {
         } as Category))
       ),
       catchError((error) => {
-        console.error('Error fetching categories:', error);
-        return throwError(() => new Error('Failed to fetch categories'));
+        console.warn(
+          'Categories order index may be missing; falling back to unordered fetch. Error:',
+          error
+        );
+        return from(getDocs(this.categoriesCollection)).pipe(
+          map((snapshot) => {
+            const categories = snapshot.docs.map((d) => ({
+              id: d.id,
+              ...d.data(),
+            } as Category));
+            return categories.sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+          }),
+          catchError((fallbackError) => {
+            console.error('Error fetching categories:', fallbackError);
+            return throwError(() => new Error('Failed to fetch categories'));
+          })
+        );
       })
     );
   }

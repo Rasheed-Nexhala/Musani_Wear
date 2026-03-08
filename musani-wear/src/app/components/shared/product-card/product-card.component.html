@@ -1,6 +1,6 @@
 <a
   [routerLink]="['/product', product.id]"
-  class="group block cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300"
+  class="group block cursor-pointer bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
 >
   <!-- Image Container (3:4 aspect ratio) -->
   <div class="relative bg-border overflow-hidden aspect-[3/4]">
@@ -8,6 +8,9 @@
       <img
         [src]="product.images[0]"
         [alt]="product.name"
+        width="300"
+        height="400"
+        loading="lazy"
         class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
       />
     } @else {
@@ -52,7 +55,7 @@
           <span
             [style.backgroundColor]="color.hex"
             [attr.title]="color.name"
-            class="block w-6 h-6 rounded-full border-2 border-border shrink-0"
+            class="block w-6 h-6 rounded-full border-2 border-border shrink-0 min-w-[24px] min-h-[24px]"
             [attr.aria-label]="'Color: ' + color.name"
           ></span>
         }

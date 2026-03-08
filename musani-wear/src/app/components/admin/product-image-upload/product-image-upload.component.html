@@ -1,5 +1,5 @@
 <div class="space-y-4">
-  <label class="block text-sm font-semibold text-charcoal">Product Images</label>
+  <label for="product-images-input" class="block text-sm font-semibold text-charcoal">Product Images</label>
 
   @if (existingImages().length > 0) {
     <div class="flex flex-wrap gap-3">
@@ -7,15 +7,18 @@
         <div class="relative group">
           <img
             [src]="url"
-            alt="Product"
+            [attr.alt]="(productName() ? productName() + ' - ' : '') + 'Image ' + ($index + 1)"
+            width="96"
+            height="96"
+            loading="lazy"
             class="w-24 h-24 object-cover rounded-md border-2 border-border"
           />
           <button
             type="button"
             (click)="removeImage(url)"
-            class="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-error text-white flex items-center justify-center
+            class="absolute -top-2 -right-2 w-10 h-10 rounded-full bg-error text-white flex items-center justify-center
                    hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2
-                   min-h-[32px] min-w-[32px]"
+                   min-h-[48px] min-w-[48px]"
             aria-label="Remove image"
           >
             <span aria-hidden="true">×</span>
@@ -27,18 +30,22 @@
 
   <div>
     <input
+      id="product-images-input"
       type="file"
       accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
       multiple
       (change)="onFileSelected($event)"
-      class="block w-full text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0
+      [attr.aria-invalid]="!!validationError"
+      [attr.aria-describedby]="validationError ? 'product-images-error' : null"
+      class="block w-full text-sm text-charcoal file:mr-4 file:py-3 file:px-4 file:rounded file:border-0
              file:bg-gold file:text-charcoal file:font-semibold file:cursor-pointer
-             hover:file:opacity-90"
+             hover:file:opacity-90 file:min-h-[48px]"
     />
   </div>
 
   @if (validationError) {
     <p
+      id="product-images-error"
       class="text-sm text-error"
       role="alert"
       aria-live="polite"

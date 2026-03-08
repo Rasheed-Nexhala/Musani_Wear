@@ -99,7 +99,7 @@ describe('ShopComponent', () => {
     mockProductService.getAllProducts.mockReturnValue(delayedProducts.asObservable());
     await render(ShopComponent, { providers: defaultProviders });
 
-    expect(screen.getByText(/loading products/i)).toBeInTheDocument();
+    expect(screen.getByRole('status', { name: /loading products/i })).toBeInTheDocument();
     delayedProducts.next(mockProducts);
     delayedProducts.complete();
   });

@@ -1,12 +1,15 @@
 import { Component, input, output } from '@angular/core';
+import { FocusTrapDirective } from '../../../directives/focus-trap.directive';
 
 /**
  * Reusable delete confirmation modal.
  * Shows overlay with modal containing title, message, and Confirm/Cancel buttons.
+ * Traps focus when open; Escape key closes.
  */
 @Component({
   selector: 'app-delete-confirmation-modal',
   standalone: true,
+  imports: [FocusTrapDirective],
   templateUrl: './delete-confirmation-modal.component.html',
 })
 export class DeleteConfirmationModalComponent {

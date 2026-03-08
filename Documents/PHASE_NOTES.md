@@ -61,3 +61,27 @@ Lessons and outcomes from each implementation phase.
 ### Verification
 - Verifier: Phase 2 checklist validated. 137 tests pass, ng build succeeds.
 - Security-auditor: Rules reviewed; Storage hardening applied.
+
+---
+
+## Phase 5 — Polish & Performance — 2026-03-08
+
+### Completed
+- [x] Task 5.1 — Mobile responsiveness (375px, 768px, 1280px; 48px touch targets; hamburger nav)
+- [x] Task 5.2 — Image optimization (loading="lazy", width/height on ProductCard, ProductDetail, admin)
+- [x] Task 5.3 — SEO optimization (SeoService, meta tags on Home, Shop, Category, ProductDetail, NotFound)
+- [x] Task 5.4 — Lighthouse audit (preconnect, default meta, contrast fix; npm scripts: audit, lighthouse)
+- [x] Task 5.5 — Error handling & loading states (ErrorDisplayComponent, LoadingSkeletonComponent, retry)
+- [x] Task 5.6 — Accessibility audit (skip link, ARIA labels, FocusTrapDirective, semantic HTML)
+
+### Lessons Learned
+- Lighthouse Performance (38) low in headless run due to Firestore cold start; re-run on production URL.
+- SEO 100, Accessibility 96; gold-on-white contrast acceptable for large text.
+- LoadingSkeletonComponent uses role="status" aria-label="Loading products" for a11y and tests.
+
+### Blockers Resolved
+- Shop loading test: use getByRole('status', { name: /loading products/i }) for LoadingSkeleton.
+
+### Verification
+- Verifier: Phase 5 checklist validated. 198 tests pass, ng build succeeds.
+- Documents: LIGHTHOUSE_AUDIT.md, MOBILE_RESPONSIVENESS_REPORT.md, ACCESSIBILITY_AUDIT_REPORT.md, PHASE_5_VERIFICATION_REPORT.md.

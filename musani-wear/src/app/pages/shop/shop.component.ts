@@ -1,11 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, startWith, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, Subject } from 'rxjs';
+import { map, startWith, switchMap, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
+import { SeoService } from '../../services/seo.service';
 import { ProductCardComponent } from '../../components/shared/product-card/product-card.component';
+import { ErrorDisplayComponent } from '../../components/shared/error-display/error-display.component';
+import { LoadingSkeletonComponent } from '../../components/shared/loading-skeleton/loading-skeleton.component';
 import { Product } from '../../models/Product';
 
 /** Product with resolved category name for display in ProductCard. */
@@ -16,14 +20,16 @@ export interface ProductWithCategory {
 
 /** Internal state before category names are resolved. */
 interface ProductsWithStatusRaw {
-  status: 'loading' | 'loaded';
+  status: 'loading' | 'loaded' | 'error';
   products: Product[];
+  error?: string;
 }
 
 /** Combined state for products with loading status. */
 export interface ProductsState {
-  status: 'loading' | 'loaded';
+  status: 'loading' | 'loaded' | 'error';
   items: ProductWithCategory[];
+  error?: string;
 }
 
 /**
@@ -34,24 +40,47 @@ export interface ProductsState {
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [AsyncPipe, ProductCardComponent],
+  imports: [AsyncPipe, ProductCardComponent, ErrorDisplayComponent, LoadingSkeletonComponent],
   templateUrl: './shop.component.html',
 })
-export class ShopComponent {
+export class ShopComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
+  private readonly seoService = inject(SeoService);
+
+  ngOnInit(): void {
+    this.seoService.setPageTitle('Shop All Products - Musani Wear');
+    this.seoService.setMeta(
+      'description',
+      'Shop all dresses at Musani Wear. Browse our full collection of exquisite designs. Filter by category to find your perfect dress.'
+    );
+  }
 
   /** Selected category ID or null for "All Products". Exposed for template. */
   readonly selectedCategory$ = new BehaviorSubject<string | null>(null);
 
-  readonly categories$ = this.categoryService.getAllCategories();
+  /** Triggers re-fetch when retry is clicked. */
+  private readonly retryTrigger$ = new Subject<void>();
+
+  /** Effective category: selectedCategory or re-emitted on retry. */
+  private readonly effectiveCategory$ = combineLatest([
+    this.selectedCategory$,
+    this.retryTrigger$.pipe(startWith(undefined)),
+  ]).pipe(map(([cat]) => cat));
+
+  readonly categories$ = this.categoryService.getAllCategories().pipe(
+    catchError((err) => {
+      console.error('Error fetching categories:', err);
+      return of([]);
+    })
+  );
 
   /**
-   * Products stream: when selectedCategory changes, switchMap to the appropriate
-   * ProductService method. Emits loading state first, then loaded data.
+   * Products stream: when selectedCategory or retry changes, switchMap to fetch.
+   * Catches errors and emits error state for ErrorDisplay.
    */
   private readonly productsWithStatus$: Observable<ProductsWithStatusRaw> =
-    this.selectedCategory$.pipe(
+    this.effectiveCategory$.pipe(
       switchMap((categoryId) => {
         const products$ =
           categoryId === null
@@ -59,7 +88,15 @@ export class ShopComponent {
             : this.productService.getProductsByCategory(categoryId);
         return products$.pipe(
           map((products) => ({ status: 'loaded' as const, products })),
-          startWith({ status: 'loading' as const, products: [] as Product[] })
+          startWith({ status: 'loading' as const, products: [] as Product[] }),
+          catchError((err) => {
+            console.error('Error fetching products:', err);
+            return of({
+              status: 'error' as const,
+              products: [] as Product[],
+              error: 'Failed to load products. Please try again.',
+            });
+          })
         );
       })
     );
@@ -77,12 +114,21 @@ export class ShopComponent {
         categoryName:
           categories.find((c) => c.id === product.categoryId)?.name ?? '',
       }));
-      return { status: state.status, items };
+      return {
+        status: state.status,
+        items,
+        error: state.error,
+      };
     })
   );
 
   /** Set category filter. Pass null for "All Products". */
   setCategory(categoryId: string | null): void {
     this.selectedCategory$.next(categoryId);
+  }
+
+  /** Re-fetch products (called when user clicks Retry on ErrorDisplay). */
+  onRetry(): void {
+    this.retryTrigger$.next();
   }
 }

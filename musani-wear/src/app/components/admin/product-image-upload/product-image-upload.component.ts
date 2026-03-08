@@ -15,6 +15,9 @@ export class ProductImageUploadComponent {
   /** URLs of existing product images to display as thumbnails. */
   existingImages = input<string[]>([]);
 
+  /** Product name for meaningful alt text (e.g. "Lehenga choli - image 1"). */
+  productName = input<string>('');
+
   /** Emitted when user selects valid image files. */
   imagesAdded = output<File[]>();
 

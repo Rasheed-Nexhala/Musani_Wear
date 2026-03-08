@@ -1,13 +1,15 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
-import { switchMap, map, tap, startWith } from 'rxjs/operators';
+import { switchMap, map, tap, startWith, filter } from 'rxjs/operators';
 import { isObservable } from 'rxjs';
 
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { WhatsAppService } from '../../services/whatsapp.service';
+import { SeoService } from '../../services/seo.service';
 import { Product } from '../../models/Product';
 import { formatPrice } from '../../utils/format-price';
 
@@ -26,6 +28,8 @@ export class ProductDetailComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly whatsAppService = inject(WhatsAppService);
+  private readonly seoService = inject(SeoService);
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Product loaded from route param id. */
   product$!: Observable<Product | null>;
@@ -89,6 +93,24 @@ export class ProductDetailComponent implements OnInit {
         return isObservable(result) ? result : of(result);
       })
     );
+
+    this.productState$
+      .pipe(
+        filter((s) => s.loaded && s.product !== null),
+        map((s) => s.product!),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe((product) => {
+        this.seoService.setPageTitle(`${product.name} - Musani Wear`);
+        this.seoService.setMeta('description', product.description || product.name);
+        const imageUrl =
+          product.images?.length > 0 ? product.images[0] : '';
+        this.seoService.setOgTags(
+          `${product.name} - Musani Wear`,
+          product.description || product.name,
+          imageUrl
+        );
+      });
   }
 
   setSelectedColor(colorName: string): void {

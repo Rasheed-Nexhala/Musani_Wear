@@ -15,6 +15,7 @@ import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/Category';
 import { slugify } from '../../../utils/slugify';
 import { DeleteConfirmationModalComponent } from '../../../components/admin/delete-confirmation-modal/delete-confirmation-modal.component';
+import { FocusTrapDirective } from '../../../directives/focus-trap.directive';
 
 /**
  * Admin Categories: CRUD for product categories.
@@ -25,7 +26,12 @@ import { DeleteConfirmationModalComponent } from '../../../components/admin/dele
 @Component({
   selector: 'app-admin-categories',
   standalone: true,
-  imports: [ReactiveFormsModule, AsyncPipe, DeleteConfirmationModalComponent],
+  imports: [
+    ReactiveFormsModule,
+    AsyncPipe,
+    DeleteConfirmationModalComponent,
+    FocusTrapDirective,
+  ],
   templateUrl: './admin-categories.component.html',
 })
 export class AdminCategoriesComponent {

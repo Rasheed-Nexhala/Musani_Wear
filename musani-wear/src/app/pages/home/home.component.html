@@ -1,13 +1,13 @@
 <!-- Hero Section -->
 <section
-  class="bg-gradient-to-r from-charcoal to-gray-800 text-white py-20"
+  class="bg-gradient-to-r from-charcoal to-gray-800 text-white py-12 md:py-20 px-4 md:px-8"
   aria-labelledby="hero-heading"
 >
-  <div class="max-w-7xl mx-auto px-4 text-center">
-    <h1 id="hero-heading" class="text-5xl font-display font-bold mb-4">
+  <div class="max-w-7xl mx-auto text-center">
+    <h1 id="hero-heading" class="text-3xl sm:text-4xl md:text-5xl font-display font-bold mb-4">
       Musani Wear
     </h1>
-    <p class="text-xl text-gray-300 mb-8">
+    <p class="text-base md:text-xl text-gray-300 mb-8">
       Exquisite dress collections for every occasion
     </p>
     <a
@@ -20,61 +20,84 @@
 </section>
 
 <!-- Featured Products -->
-<section class="py-20 bg-white" aria-labelledby="featured-heading">
-  <div class="max-w-7xl mx-auto px-4">
-    <h2 id="featured-heading" class="text-4xl font-display font-bold text-center mb-12 text-charcoal">
+<section class="py-12 md:py-20 bg-white px-4 md:px-8" aria-labelledby="featured-heading">
+  <div class="max-w-7xl mx-auto">
+    <h2 id="featured-heading" class="text-2xl md:text-4xl font-display font-bold text-center mb-8 md:mb-12 text-charcoal">
       Featured Collections
     </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      @for (item of productsWithCategories$ | async; track item.product.id ?? $index) {
-        <app-product-card
-          [product]="item.product"
-          [categoryName]="item.categoryName"
+    @if (featuredState$ | async; as state) {
+      @if (state.status === 'error' && state.error) {
+        <app-error-display
+          [error]="state.error"
+          (retry)="onRetryFeatured()"
         />
+      } @else if (state.status === 'loading') {
+        <app-loading-skeleton />
+      } @else if (state.items.length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          @for (item of state.items; track item.product.id ?? $index) {
+            <app-product-card
+              [product]="item.product"
+              [categoryName]="item.categoryName"
+            />
+          }
+        </div>
+      } @else {
+        <p class="text-center text-charcoal font-body py-8">
+          No featured products yet. <a routerLink="/shop" class="text-gold hover:underline font-semibold">Browse all products</a>
+        </p>
       }
-    </div>
+    }
   </div>
 </section>
 
 <!-- Categories Showcase -->
-<section class="py-20 bg-cream" aria-labelledby="collections-heading">
-  <div class="max-w-7xl mx-auto px-4">
-    <h2 id="collections-heading" class="text-4xl font-display font-bold text-center mb-12 text-charcoal">
+<section class="py-12 md:py-20 bg-cream px-4 md:px-8" aria-labelledby="collections-heading">
+  <div class="max-w-7xl mx-auto">
+    <h2 id="collections-heading" class="text-2xl md:text-4xl font-display font-bold text-center mb-8 md:mb-12 text-charcoal">
       Collections
     </h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      @for (category of categories$ | async; track category.slug) {
-        <a
-          [routerLink]="['/category', category.slug]"
-          class="group relative overflow-hidden rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
-        >
-          <div
-            class="bg-gradient-to-br from-gold to-yellow-600 h-48 flex items-center justify-center"
-          >
-            <div class="text-center text-charcoal px-4">
-              <p class="text-2xl md:text-3xl font-display font-bold">
-                {{ category.name }}
-              </p>
-              @if (category.description) {
-                <p class="text-sm mt-2 line-clamp-2">{{ category.description }}</p>
-              }
-            </div>
-          </div>
-        </a>
+    @if ((categories$ | async); as categories) {
+      @if ((categories ?? []).length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          @for (category of categories; track category.slug) {
+            <a
+              [routerLink]="['/category', category.slug]"
+              class="group relative overflow-hidden rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+            >
+              <div
+                class="bg-gradient-to-br from-gold to-yellow-600 h-48 flex items-center justify-center"
+              >
+                <div class="text-center text-charcoal px-4">
+                  <p class="text-2xl md:text-3xl font-display font-bold">
+                    {{ category.name }}
+                  </p>
+                  @if (category.description) {
+                    <p class="text-sm mt-2 line-clamp-2">{{ category.description }}</p>
+                  }
+                </div>
+              </div>
+            </a>
+          }
+        </div>
+      } @else {
+        <p class="text-center text-charcoal font-body py-8">
+          No collections yet. Check back soon.
+        </p>
       }
-    </div>
+    }
   </div>
 </section>
 
 <!-- Call to Action -->
 <section
-  class="bg-charcoal text-white py-20"
+  class="bg-charcoal text-white py-12 md:py-20 px-4 md:px-8"
   aria-labelledby="cta-heading"
 >
-  <div class="max-w-2xl mx-auto px-4 text-center">
-    <h2 id="cta-heading" class="text-3xl font-display font-bold mb-4">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 id="cta-heading" class="text-2xl md:text-3xl font-display font-bold mb-4">
       Have Questions?
     </h2>
     <p class="mb-8 text-gray-300">

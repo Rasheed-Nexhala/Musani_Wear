@@ -35,7 +35,7 @@
           id="businessName"
           type="text"
           formControlName="businessName"
-          class="w-full px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
+          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
           [class.border-red-600]="
             settingsForm.get('businessName')?.invalid &&
             settingsForm.get('businessName')?.touched
@@ -44,13 +44,19 @@
             settingsForm.get('businessName')?.invalid &&
             settingsForm.get('businessName')?.touched
           "
+          [attr.aria-describedby]="
+            settingsForm.get('businessName')?.invalid &&
+            settingsForm.get('businessName')?.touched
+              ? 'businessName-error'
+              : null
+          "
         />
         @if (
           settingsForm.get('businessName')?.invalid &&
           settingsForm.get('businessName')?.touched;
           as _
         ) {
-          <p class="mt-1 text-sm text-red-600">Business name is required.</p>
+          <p id="businessName-error" class="mt-1 text-sm text-red-600">Business name is required.</p>
         }
       </div>
 
@@ -66,7 +72,9 @@
           type="tel"
           formControlName="whatsappNumber"
           placeholder="+1234567890"
-          class="w-full px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
+          inputmode="tel"
+          autocomplete="tel"
+          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
           [class.border-red-600]="
             settingsForm.get('whatsappNumber')?.invalid &&
             settingsForm.get('whatsappNumber')?.touched
@@ -74,6 +82,12 @@
           [attr.aria-invalid]="
             settingsForm.get('whatsappNumber')?.invalid &&
             settingsForm.get('whatsappNumber')?.touched
+          "
+          [attr.aria-describedby]="
+            settingsForm.get('whatsappNumber')?.invalid &&
+            settingsForm.get('whatsappNumber')?.touched
+              ? 'whatsappNumber-error'
+              : null
           "
         />
         <p class="mt-1 text-sm text-gray-600">
@@ -84,7 +98,7 @@
           settingsForm.get('whatsappNumber')?.touched;
           as _
         ) {
-          <p class="mt-1 text-sm text-red-600">WhatsApp number is required.</p>
+          <p id="whatsappNumber-error" class="mt-1 text-sm text-red-600">WhatsApp number is required.</p>
         }
       </div>
 
@@ -99,7 +113,7 @@
           id="businessEmail"
           type="email"
           formControlName="businessEmail"
-          class="w-full px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
+          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
           [class.border-red-600]="
             settingsForm.get('businessEmail')?.invalid &&
             settingsForm.get('businessEmail')?.touched
@@ -107,6 +121,12 @@
           [attr.aria-invalid]="
             settingsForm.get('businessEmail')?.invalid &&
             settingsForm.get('businessEmail')?.touched
+          "
+          [attr.aria-describedby]="
+            settingsForm.get('businessEmail')?.invalid &&
+            settingsForm.get('businessEmail')?.touched
+              ? 'businessEmail-error'
+              : null
           "
         />
         @if (
@@ -135,7 +155,9 @@
           id="businessPhone"
           type="tel"
           formControlName="businessPhone"
-          class="w-full px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
+          inputmode="tel"
+          autocomplete="tel"
+          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
           [class.border-red-600]="
             settingsForm.get('businessPhone')?.invalid &&
             settingsForm.get('businessPhone')?.touched
@@ -144,13 +166,19 @@
             settingsForm.get('businessPhone')?.invalid &&
             settingsForm.get('businessPhone')?.touched
           "
+          [attr.aria-describedby]="
+            settingsForm.get('businessPhone')?.invalid &&
+            settingsForm.get('businessPhone')?.touched
+              ? 'businessPhone-error'
+              : null
+          "
         />
         @if (
           settingsForm.get('businessPhone')?.invalid &&
           settingsForm.get('businessPhone')?.touched;
           as _
         ) {
-          <p class="mt-1 text-sm text-red-600">Business phone is required.</p>
+          <p id="businessPhone-error" class="mt-1 text-sm text-red-600">Business phone is required.</p>
         }
       </div>
 

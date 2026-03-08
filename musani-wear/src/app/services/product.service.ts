@@ -53,7 +53,8 @@ export class ProductService {
 
   /**
    * Get featured, available products ordered by createdAt desc.
-   * Requires Firestore composite index: products (featured, available, createdAt).
+   * Uses composite index when available; falls back to getAllProducts + client filter
+   * if index is missing (e.g. new Firestore project).
    */
   getFeaturedProducts(): Observable<Product[]> {
     const q = query(
@@ -71,8 +72,21 @@ export class ProductService {
         } as Product))
       ),
       catchError((error) => {
-        console.error('Error fetching featured products:', error);
-        return throwError(() => new Error('Failed to fetch featured products'));
+        console.warn(
+          'Featured products index may be missing; falling back to getAllProducts. Error:',
+          error
+        );
+        return this.getAllProducts().pipe(
+          map((products) =>
+            products
+              .filter((p) => p.featured === true && p.available === true)
+              .sort((a, b) => {
+                const aTime = a.createdAt?.toMillis?.() ?? a.createdAt ?? 0;
+                const bTime = b.createdAt?.toMillis?.() ?? b.createdAt ?? 0;
+                return bTime - aTime;
+              })
+          )
+        );
       })
     );
   }
@@ -110,8 +124,21 @@ export class ProductService {
         } as Product))
       ),
       catchError((error) => {
-        console.error('Error fetching products by category:', error);
-        return throwError(() => new Error('Failed to fetch products by category'));
+        console.warn(
+          'Products-by-category index may be missing; falling back to getAllProducts. Error:',
+          error
+        );
+        return this.getAllProducts().pipe(
+          map((products) =>
+            products
+              .filter((p) => p.categoryId === categoryId)
+              .sort((a, b) => {
+                const aTime = a.createdAt?.toMillis?.() ?? a.createdAt ?? 0;
+                const bTime = b.createdAt?.toMillis?.() ?? b.createdAt ?? 0;
+                return bTime - aTime;
+              })
+          )
+        );
       })
     );
   }

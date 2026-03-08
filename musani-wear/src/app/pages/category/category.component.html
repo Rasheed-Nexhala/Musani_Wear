@@ -1,7 +1,7 @@
 @if (pageState$ | async; as state) {
   @if (state.category === null) {
     <!-- Category not found -->
-    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+    <section class="max-w-7xl mx-auto px-4 py-12" aria-label="Category not found">
       <div class="text-center py-16">
         <h2 class="text-2xl font-display font-bold text-charcoal mb-4">
           Category not found
@@ -16,14 +16,20 @@
           Browse all products
         </a>
       </div>
-    </main>
+    </section>
+  } @else if (state.productsStatus === 'error' && state.error) {
+    <!-- Error loading products -->
+    <section class="max-w-7xl mx-auto px-4 py-12" aria-label="Error loading products">
+      <app-error-display
+        [error]="state.error"
+        (retry)="onRetry()"
+      />
+    </section>
   } @else if (state.productsStatus === 'loading') {
     <!-- Loading products -->
-    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
-      <p class="text-center text-charcoal font-body py-12">
-        Loading products...
-      </p>
-    </main>
+    <section class="max-w-7xl mx-auto px-4 py-12" aria-label="Loading products">
+      <app-loading-skeleton />
+    </section>
   } @else {
     <!-- Header: category name and description with gold gradient -->
     <header
@@ -46,7 +52,7 @@
     </header>
 
     <!-- Product grid -->
-    <main class="max-w-7xl mx-auto px-4 py-12" id="main">
+    <section class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12" aria-label="Products in {{ state.category.name }}">
       @if (state.products.length === 0) {
         <p class="text-center text-charcoal font-body py-12">
           No products in this category yet.
@@ -64,13 +70,11 @@
           }
         </div>
       }
-    </main>
+    </section>
   }
 } @else {
   <!-- Loading category (before first emission) -->
-  <main class="max-w-7xl mx-auto px-4 py-12" id="main">
-    <p class="text-center text-charcoal font-body py-12">
-      Loading products...
-    </p>
-  </main>
+  <section class="max-w-7xl mx-auto px-4 py-12" aria-label="Loading category">
+    <app-loading-skeleton />
+  </section>
 }
