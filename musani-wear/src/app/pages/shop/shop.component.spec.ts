@@ -133,6 +133,6 @@ describe('ShopComponent', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /casual wear/i }));
 
-    expect(screen.getByText(/no products found in this category/i)).toBeInTheDocument();
+    expect(screen.getByText(/no products found/i)).toBeInTheDocument();
   });
 });

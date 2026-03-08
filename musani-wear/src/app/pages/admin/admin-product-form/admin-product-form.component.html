@@ -1,12 +1,17 @@
 <div class="admin-page-narrow">
-  <div class="admin-header mb-6 md:mb-8">
+  <div class="admin-header mb-6 md:mb-8 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
     <div>
       <h1 class="admin-title">
         {{ isEdit() ? 'Edit Product' : 'Add Product' }}
       </h1>
-      <p class="admin-subtitle">Update product details, images, and inventory status.</p>
+      <p class="admin-subtitle leading-relaxed">Update product details, images, and inventory status.</p>
     </div>
-    <a routerLink="/admin/products" class="btn-secondary w-fit min-h-[48px] inline-flex items-center">Back to Products</a>
+    <a
+      routerLink="/admin/products"
+      class="btn-secondary w-full sm:w-fit min-h-[48px] inline-flex items-center justify-center"
+    >
+      Back to Products
+    </a>
   </div>
 
   @if (loadingProduct()) {
@@ -120,12 +125,12 @@
 
     <!-- Colors -->
     <div class="admin-panel admin-panel-body">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
         <label class="admin-label mb-0">Colors</label>
         <button
           type="button"
           (click)="addColor()"
-          class="text-sm font-medium text-gold hover:opacity-80 min-h-[48px] inline-flex items-center w-fit"
+          class="text-sm font-medium text-gold hover:opacity-80 min-h-[48px] inline-flex items-center justify-center w-full sm:w-fit"
         >
           + Add Color
         </button>
@@ -142,17 +147,21 @@
               placeholder="Color name"
               class="admin-input flex-1"
             />
-            <div class="flex gap-3 items-center">
-              <input
-                type="color"
-                formControlName="hex"
-                class="w-12 h-12 min-h-[48px] min-w-[48px] border-2 border-border rounded cursor-pointer shrink-0"
-              />
-              <span class="flex-1 min-w-0 px-2 py-2 text-sm text-gray-600 truncate">{{ colorsArray.at(i).get('hex')?.value }}</span>
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full sm:w-auto sm:ml-auto">
+              <div class="flex items-center gap-3 min-w-0">
+                <input
+                  type="color"
+                  formControlName="hex"
+                  class="w-12 h-12 min-h-[48px] min-w-[48px] border-2 border-border rounded cursor-pointer shrink-0"
+                />
+                <span class="flex-1 min-w-0 px-2 py-2 text-sm text-gray-600 break-all sm:truncate">
+                  {{ colorsArray.at(i).get('hex')?.value }}
+                </span>
+              </div>
               <button
                 type="button"
                 (click)="removeColor(i)"
-                class="admin-danger-action shrink-0"
+                class="admin-danger-action w-full sm:w-auto min-h-[48px] justify-center shrink-0"
                 aria-label="Remove color"
               >
                 Remove
@@ -193,32 +202,32 @@
     <!-- Available & Featured -->
     <div class="admin-panel admin-panel-body">
       <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Visibility and Stock</h2>
-      <div class="flex flex-wrap gap-6">
-      <label class="flex items-center gap-2 cursor-pointer">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
+      <label class="flex items-center gap-3 cursor-pointer rounded-lg border border-border bg-cream/30 p-3 min-h-[52px]">
         <input
           type="checkbox"
           formControlName="available"
-          class="w-5 h-5 rounded border-border text-gold focus:ring-gold"
+          class="w-5 h-5 rounded border-border text-gold focus:ring-gold shrink-0"
         />
-        <span class="text-charcoal font-medium">Available (In Stock)</span>
+        <span class="text-charcoal font-medium text-sm sm:text-base">Available (In Stock)</span>
       </label>
-      <label class="flex items-center gap-2 cursor-pointer">
+      <label class="flex items-center gap-3 cursor-pointer rounded-lg border border-border bg-cream/30 p-3 min-h-[52px]">
         <input
           type="checkbox"
           formControlName="featured"
-          class="w-5 h-5 rounded border-border text-gold focus:ring-gold"
+          class="w-5 h-5 rounded border-border text-gold focus:ring-gold shrink-0"
         />
-        <span class="text-charcoal font-medium">Featured</span>
+        <span class="text-charcoal font-medium text-sm sm:text-base">Featured</span>
       </label>
       </div>
     </div>
 
     <!-- Submit -->
-    <div class="admin-panel admin-panel-body flex flex-wrap gap-4">
+    <div class="admin-panel admin-panel-body flex flex-col sm:flex-row gap-3 sm:gap-4">
       <button
         type="submit"
         [disabled]="submitting()"
-        class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] flex items-center justify-center gap-2"
+        class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] flex items-center justify-center gap-2 w-full sm:w-auto"
         [attr.aria-busy]="submitting()"
       >
         @if (submitting()) {
@@ -234,7 +243,7 @@
         <button
           type="button"
           (click)="openDeleteModal()"
-          class="btn-danger"
+          class="btn-danger w-full sm:w-auto min-h-[48px] inline-flex items-center justify-center"
         >
           Delete Product
         </button>

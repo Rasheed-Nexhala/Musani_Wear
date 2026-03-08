@@ -26,7 +26,8 @@
       <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-gold">Filter by Category</p>
 
       @if (categoriesState$ | async; as state) {
-        @if (selectedCategory$ | async; as selectedCategory) {
+        @let selectedCategory = (selectedCategory$ | async);
+        @if (selectedCategory !== undefined) {
           @if (state.status === 'loading') {
             <div class="flex flex-wrap gap-2 md:gap-3" role="status" aria-label="Loading categories">
               <div class="h-12 w-24 animate-pulse rounded-full bg-border" aria-hidden="true"></div>

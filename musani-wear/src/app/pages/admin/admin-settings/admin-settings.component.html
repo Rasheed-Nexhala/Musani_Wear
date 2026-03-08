@@ -28,7 +28,7 @@
     </div>
   } @else {
   <div class="admin-panel admin-panel-body">
-    <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="space-y-6">
+    <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="space-y-5 pb-24 md:space-y-6 md:pb-0">
       @if (errorMessage()) {
         <div
           role="alert"
@@ -48,7 +48,7 @@
         </div>
       }
 
-      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5 space-y-3">
         <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Business Profile</h2>
         <label
           for="businessName"
@@ -85,10 +85,10 @@
         }
       </div>
 
-      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5 space-y-4">
         <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Contact Channels</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <div>
+          <div class="space-y-1.5">
             <label
               for="whatsappNumber"
               class="admin-label"
@@ -130,7 +130,7 @@
             }
           </div>
 
-          <div>
+          <div class="space-y-1.5">
             <label
               for="businessEmail"
               class="admin-label"
@@ -172,7 +172,7 @@
             }
           </div>
 
-          <div>
+          <div class="space-y-1.5">
             <label
               for="businessPhone"
               class="admin-label"
@@ -212,7 +212,7 @@
         </div>
       </div>
 
-      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5 space-y-3">
         <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Social</h2>
         <label
           for="instagramUrl"
@@ -232,22 +232,26 @@
         </p>
       </div>
 
-      <button
-        type="submit"
-        class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] px-6 py-3 flex items-center justify-center gap-2"
-        [disabled]="saving()"
-        [attr.aria-busy]="saving()"
+      <div
+        class="sticky bottom-0 -mx-4 border-t border-border/70 bg-bg-primary/95 px-4 py-3 backdrop-blur md:static md:mx-0 md:border-0 md:bg-transparent md:px-0 md:py-0"
       >
-        @if (saving()) {
-          <span
-            class="inline-block w-5 h-5 rounded-full border-2 border-charcoal border-t-transparent animate-spin"
-            aria-hidden="true"
-          ></span>
-          Saving...
-        } @else {
-          Save
-        }
-      </button>
+        <button
+          type="submit"
+          class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] w-full md:w-auto md:min-w-[180px] px-6 py-3 flex items-center justify-center gap-2"
+          [disabled]="saving()"
+          [attr.aria-busy]="saving()"
+        >
+          @if (saving()) {
+            <span
+              class="inline-block w-5 h-5 rounded-full border-2 border-charcoal border-t-transparent animate-spin"
+              aria-hidden="true"
+            ></span>
+            Saving...
+          } @else {
+            Save
+          }
+        </button>
+      </div>
     </form>
   </div>
   }

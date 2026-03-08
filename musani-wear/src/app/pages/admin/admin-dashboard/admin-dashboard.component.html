@@ -1,8 +1,8 @@
 <div class="admin-page">
-  <div class="admin-header">
-    <div>
-      <h1 class="admin-title">Admin Dashboard</h1>
-      <p class="admin-subtitle">
+  <div class="admin-header mb-6 sm:mb-8">
+    <div class="space-y-2">
+      <h1 class="admin-title text-2xl sm:text-3xl">Admin Dashboard</h1>
+      <p class="admin-subtitle text-sm sm:text-base max-w-2xl">
         Track products, stock health, and quick management actions.
       </p>
     </div>
@@ -16,7 +16,7 @@
       />
     } @else {
   <!-- Stats grid -->
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 mb-8 sm:mb-10">
     <app-stats-card
       label="Total Products"
       [value]="state.totalProducts"
@@ -40,33 +40,33 @@
   </div>
 
   <!-- Quick Actions -->
-  <section class="admin-panel mb-10">
+  <section class="admin-panel mb-8 sm:mb-10">
     <div class="admin-panel-body">
-      <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
+      <h2 class="text-lg sm:text-xl font-display font-semibold text-charcoal mb-4">
         Quick Actions
       </h2>
-      <div class="flex flex-wrap gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap gap-3 sm:gap-4">
         <a
           routerLink="/admin/products"
-          class="btn-primary"
+          class="btn-primary inline-flex items-center justify-center min-h-[48px] w-full sm:w-auto"
         >
           View Products
         </a>
         <a
           routerLink="/admin/products/new"
-          class="btn-primary"
+          class="btn-primary inline-flex items-center justify-center min-h-[48px] w-full sm:w-auto"
         >
           Add Product
         </a>
         <a
           routerLink="/admin/categories"
-          class="btn-secondary"
+          class="btn-secondary inline-flex items-center justify-center min-h-[48px] w-full sm:w-auto"
         >
           Manage Categories
         </a>
         <a
           routerLink="/admin/settings"
-          class="btn-secondary"
+          class="btn-secondary inline-flex items-center justify-center min-h-[48px] w-full sm:w-auto"
         >
           Settings
         </a>
@@ -77,21 +77,21 @@
   <!-- Recent Products -->
   <section class="admin-panel">
     <div class="admin-panel-body">
-      <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
+      <h2 class="text-lg sm:text-xl font-display font-semibold text-charcoal mb-4">
         Recent Products
       </h2>
       @if (state.recentProducts.length > 0) {
-        <ul class="rounded-xl border border-border divide-y divide-border">
+        <ul class="rounded-xl border border-border divide-y divide-border overflow-hidden">
           @for (product of state.recentProducts; track product.id ?? $index) {
-            <li class="p-4 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
-              <div>
-                <span class="font-semibold text-charcoal">{{ product.name }}</span>
-                <span class="text-gray-600 ml-2">
+            <li class="p-4 sm:p-5 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+              <div class="min-w-0">
+                <span class="block font-semibold text-charcoal text-base break-words leading-snug">{{ product.name }}</span>
+                <span class="mt-1 block text-sm sm:text-base text-gray-600">
                   {{ formatPrice(product.price) }}
                 </span>
               </div>
               <span
-                class="px-3 py-1 rounded-full text-sm font-semibold"
+                class="self-start sm:self-auto px-3 py-2 rounded-full text-sm font-semibold min-h-[40px] inline-flex items-center"
                 [class.bg-success]="product.available"
                 [class.text-white]="product.available"
                 [class.bg-error]="!product.available"
@@ -103,7 +103,7 @@
           }
         </ul>
       } @else {
-        <div class="admin-empty-state">
+        <div class="admin-empty-state text-center sm:text-left">
           <p class="text-lg font-semibold text-charcoal">No recent products yet.</p>
           <p class="mt-2 text-sm text-gray-600">Add your first product to start seeing activity here.</p>
         </div>
