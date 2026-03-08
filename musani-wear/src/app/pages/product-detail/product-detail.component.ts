@@ -2,8 +2,8 @@ import { AsyncPipe } from '@angular/common';
 import { Component, inject, OnInit, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, of, BehaviorSubject, combineLatest } from 'rxjs';
-import { switchMap, map, tap, startWith, filter } from 'rxjs/operators';
+import { Observable, of, BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { switchMap, map, tap, startWith, filter, catchError } from 'rxjs/operators';
 import { isObservable } from 'rxjs';
 
 import { ProductService } from '../../services/product.service';
@@ -12,6 +12,15 @@ import { WhatsAppService } from '../../services/whatsapp.service';
 import { SeoService } from '../../services/seo.service';
 import { Product } from '../../models/Product';
 import { formatPrice } from '../../utils/format-price';
+import { ContentLoaderComponent } from '../../components/shared/content-loader/content-loader.component';
+import { ErrorDisplayComponent } from '../../components/shared/error-display/error-display.component';
+
+/** Product detail state: loading, loaded (with product or not-found), or error. */
+export interface ProductState {
+  loaded: boolean;
+  product: Product | null;
+  error?: string;
+}
 
 /**
  * Product Detail Page: Full product view with image gallery, color selection,
@@ -20,7 +29,7 @@ import { formatPrice } from '../../utils/format-price';
 @Component({
   selector: 'app-product-detail',
   standalone: true,
-  imports: [AsyncPipe, RouterLink],
+  imports: [AsyncPipe, RouterLink, ContentLoaderComponent, ErrorDisplayComponent],
   templateUrl: './product-detail.component.html',
 })
 export class ProductDetailComponent implements OnInit {
@@ -34,8 +43,8 @@ export class ProductDetailComponent implements OnInit {
   /** Product loaded from route param id. */
   product$!: Observable<Product | null>;
 
-  /** { loaded, product } to distinguish loading vs not-found in template. */
-  productState$!: Observable<{ loaded: boolean; product: Product | null }>;
+  /** { loaded, product, error? } to distinguish loading vs not-found vs error in template. */
+  productState$!: Observable<ProductState>;
 
   /** Category name resolved from product.categoryId. */
   categoryName$!: Observable<string>;
@@ -53,8 +62,21 @@ export class ProductDetailComponent implements OnInit {
   /** Expose formatPrice for template. */
   readonly formatPrice = formatPrice;
 
+  /** Fallback when image fails to load. */
+  readonly imagePlaceholder =
+    'https://placehold.co/600x800/e8e0d5/9a9a9a?text=No+Image';
+
+  /** Triggers re-fetch when user clicks Retry on error. */
+  private readonly retryTrigger$ = new Subject<void>();
+
+  /** Route params combined with retry for re-fetch on error. */
+  private readonly fetchTrigger$ = combineLatest([
+    this.route.params,
+    this.retryTrigger$.pipe(startWith(undefined)),
+  ]).pipe(map(([params]) => params));
+
   ngOnInit(): void {
-    this.product$ = this.route.params.pipe(
+    this.product$ = this.fetchTrigger$.pipe(
       switchMap((params) =>
         this.productService.getProductById(params['id'] ?? '')
       ),
@@ -67,8 +89,16 @@ export class ProductDetailComponent implements OnInit {
     );
 
     this.productState$ = this.product$.pipe(
-      map((product) => ({ loaded: true, product })),
-      startWith({ loaded: false, product: null as Product | null })
+      map((product) => ({ loaded: true, product, error: undefined })),
+      startWith({ loaded: false, product: null as Product | null }),
+      catchError((err) => {
+        console.error('Error loading product:', err);
+        return of({
+          loaded: true,
+          product: null,
+          error: 'Failed to load product. Please try again.',
+        } as ProductState);
+      })
     );
 
     this.categoryName$ = this.product$.pipe(
@@ -111,6 +141,11 @@ export class ProductDetailComponent implements OnInit {
           imageUrl
         );
       });
+  }
+
+  /** Re-fetch product (called when user clicks Retry on ErrorDisplay). */
+  onRetry(): void {
+    this.retryTrigger$.next();
   }
 
   setSelectedColor(colorName: string): void {

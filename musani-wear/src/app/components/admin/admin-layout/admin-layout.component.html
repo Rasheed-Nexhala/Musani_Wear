@@ -16,28 +16,28 @@
         routerLink="/admin"
         routerLinkActive="bg-gold/20 text-gold"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="block px-4 py-3 rounded-md hover:bg-white/10 transition font-medium min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal"
+        class="admin-sidebar-link flex"
       >
         Dashboard
       </a>
       <a
         routerLink="/admin/products"
         routerLinkActive="bg-gold/20 text-gold"
-        class="block px-4 py-3 rounded-md hover:bg-white/10 transition font-medium min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal"
+        class="admin-sidebar-link flex"
       >
         Products
       </a>
       <a
         routerLink="/admin/categories"
         routerLinkActive="bg-gold/20 text-gold"
-        class="block px-4 py-3 rounded-md hover:bg-white/10 transition font-medium min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal"
+        class="admin-sidebar-link flex"
       >
         Categories
       </a>
       <a
         routerLink="/admin/settings"
         routerLinkActive="bg-gold/20 text-gold"
-        class="block px-4 py-3 rounded-md hover:bg-white/10 transition font-medium min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-charcoal"
+        class="admin-sidebar-link flex"
       >
         Settings
       </a>
@@ -56,7 +56,7 @@
   </aside>
 
   <!-- Mobile top bar -->
-  <div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-charcoal text-white px-4 py-3 flex items-center justify-between">
+  <div class="lg:hidden fixed top-0 left-0 right-0 z-40 bg-charcoal text-white px-4 py-3 flex items-center justify-between border-b border-white/10">
     <a routerLink="/admin" class="font-display font-bold text-gold focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded min-h-[48px] flex items-center" aria-label="Musani Wear Admin - Home">Musani Wear</a>
     <details class="relative">
       <summary class="list-none cursor-pointer px-3 py-2 rounded hover:bg-white/10 min-h-[48px] min-w-[48px] flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2" aria-label="Open admin menu">
@@ -66,10 +66,10 @@
         </svg>
       </summary>
       <div class="absolute right-0 mt-2 w-48 bg-charcoal rounded-md shadow-lg border border-white/10 py-2">
-        <a routerLink="/admin" class="block px-4 py-3 hover:bg-white/10 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset">Dashboard</a>
-        <a routerLink="/admin/products" class="block px-4 py-3 hover:bg-white/10 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset">Products</a>
-        <a routerLink="/admin/categories" class="block px-4 py-3 hover:bg-white/10 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset">Categories</a>
-        <a routerLink="/admin/settings" class="block px-4 py-3 hover:bg-white/10 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset">Settings</a>
+        <a routerLink="/admin" routerLinkActive="bg-gold/20 text-gold" [routerLinkActiveOptions]="{ exact: true }" class="admin-sidebar-link flex focus:ring-inset">Dashboard</a>
+        <a routerLink="/admin/products" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Products</a>
+        <a routerLink="/admin/categories" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Categories</a>
+        <a routerLink="/admin/settings" routerLinkActive="bg-gold/20 text-gold" class="admin-sidebar-link flex focus:ring-inset">Settings</a>
         <button type="button" (click)="logout()" class="w-full text-left px-4 py-3 text-error hover:bg-error/20 min-h-[48px] flex items-center focus:outline-none focus:ring-2 focus:ring-gold focus:ring-inset" aria-label="Log out of admin panel">
           Logout
         </button>
@@ -79,7 +79,7 @@
 
   <!-- Main content (app shell provides main landmark) -->
   <div class="flex-1 min-w-0 pt-16 lg:pt-0" role="region" aria-label="Admin content">
-    <div class="p-4 md:p-8">
+    <div class="p-0">
       <router-outlet />
     </div>
   </div>

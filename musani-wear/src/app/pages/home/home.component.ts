@@ -7,6 +7,7 @@ import { map, startWith, catchError, switchMap } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
 import { WhatsAppService } from '../../services/whatsapp.service';
+import { SettingsService } from '../../services/settings.service';
 import { SeoService } from '../../services/seo.service';
 import { ProductCardComponent } from '../../components/shared/product-card/product-card.component';
 import { ErrorDisplayComponent } from '../../components/shared/error-display/error-display.component';
@@ -41,6 +42,7 @@ export class HomeComponent implements OnInit {
   private readonly productService = inject(ProductService);
   private readonly categoryService = inject(CategoryService);
   private readonly whatsAppService = inject(WhatsAppService);
+  private readonly settingsService = inject(SettingsService);
   private readonly seoService = inject(SeoService);
 
   ngOnInit(): void {
@@ -110,12 +112,18 @@ export class HomeComponent implements OnInit {
     this.retryTrigger$.next();
   }
 
-  /** Categories for showcase section (with fallback on error). */
-  readonly categories$ = this.categoryService.getAllCategories().pipe(
+  /** Categories showcase state: loading, loaded, or error. */
+  readonly categoriesState$ = this.categoryService.getAllCategories().pipe(
+    map((categories) => ({ status: 'loaded' as const, categories })),
+    startWith({ status: 'loading' as const, categories: [] as Category[] }),
     catchError((err) => {
       console.error('Error fetching categories:', err);
-      return of([]);
+      return of({ status: 'error' as const, categories: [] as Category[] });
     })
   );
   readonly whatsappUrl$ = this.whatsAppService.generateGeneralInquiryUrl();
+  readonly instagramUrl$ = this.settingsService.getSettings().pipe(
+    map((s) => (s?.instagramUrl?.trim() ?? '') || ''),
+    catchError(() => of(''))
+  );
 }

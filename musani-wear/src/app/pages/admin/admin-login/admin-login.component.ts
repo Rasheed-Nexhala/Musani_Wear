@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -40,6 +40,7 @@ export class AdminLoginComponent {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
+  readonly showPassword = signal(false);
 
   constructor() {
     effect(() => {
@@ -56,5 +57,9 @@ export class AdminLoginComponent {
     }
     const { email, password } = this.loginForm.getRawValue();
     this.authService.login(email, password);
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword.update((visible) => !visible);
   }
 }

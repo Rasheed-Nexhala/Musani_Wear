@@ -1,50 +1,94 @@
 <!-- Header -->
 <header
-  class="bg-gray-50 border-b border-border py-6 md:py-8 px-4 md:px-8"
+  class="relative overflow-hidden bg-gradient-to-br from-charcoal via-gray-900 to-charcoal px-4 py-12 text-white md:px-8 md:py-16"
   aria-labelledby="shop-heading"
 >
-  <div class="max-w-7xl mx-auto">
-    <h1 id="shop-heading" class="text-2xl md:text-4xl font-display font-bold text-charcoal">
+  <div class="pointer-events-none absolute -left-20 top-6 h-52 w-52 rounded-full bg-gold/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute -right-16 bottom-0 h-48 w-48 rounded-full bg-gold/15 blur-3xl"></div>
+
+  <div class="relative mx-auto max-w-7xl">
+    <p class="mb-3 inline-flex rounded-full border border-gold/40 bg-gold/15 px-4 py-1 text-xs font-semibold uppercase tracking-widest text-gold md:text-sm">
+      Musani Wear Boutique
+    </p>
+    <h1 id="shop-heading" class="text-3xl font-display font-bold md:text-5xl">
       Shop All Products
     </h1>
+    <p class="mt-3 max-w-2xl text-sm text-gray-200 md:text-base">
+      Explore our full collection of elegant styles. Filter by category to quickly find what fits your occasion.
+    </p>
   </div>
 </header>
 
 <!-- Category Filter Tabs -->
-<section class="bg-white border-b border-border" aria-label="Filter by category">
-  <div class="max-w-7xl mx-auto px-4 md:px-8 py-4">
-    @if (categories$ | async; as categories) {
-      <div class="flex flex-wrap gap-2 md:gap-3">
-        <button
-          type="button"
-          (click)="setCategory(null)"
-          class="px-4 py-3 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
-          [class.bg-gold]="(selectedCategory$ | async) === null"
-          [class.bg-cream]="(selectedCategory$ | async) !== null"
-          [class.hover:bg-cream/80]="(selectedCategory$ | async) !== null"
-        >
-          All Products
-        </button>
-        @for (category of categories ?? []; track category.id ?? category.slug) {
-          <button
-            type="button"
-            (click)="setCategory(category.id ?? null)"
-            class="px-4 py-3 rounded-full font-body font-medium text-sm text-charcoal transition-all duration-200 min-h-[48px] focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
-            [class.bg-gold]="(selectedCategory$ | async) === (category.id ?? '')"
-            [class.bg-cream]="(selectedCategory$ | async) !== (category.id ?? '')"
-            [class.hover:bg-cream/80]="(selectedCategory$ | async) !== (category.id ?? '')"
-          >
-            {{ category.name }}
-          </button>
+<section class="border-b border-border bg-white" aria-label="Filter by category">
+  <div class="mx-auto max-w-7xl px-4 py-5 md:px-8 md:py-6">
+    <div class="rounded-2xl border border-border bg-bg-primary p-4 md:p-5">
+      <p class="mb-3 text-xs font-semibold uppercase tracking-widest text-gold">Filter by Category</p>
+
+      @if (categoriesState$ | async; as state) {
+        @if (selectedCategory$ | async; as selectedCategory) {
+          @if (state.status === 'loading') {
+            <div class="flex flex-wrap gap-2 md:gap-3" role="status" aria-label="Loading categories">
+              <div class="h-12 w-24 animate-pulse rounded-full bg-border" aria-hidden="true"></div>
+              <div class="h-12 w-20 animate-pulse rounded-full bg-border" aria-hidden="true"></div>
+              <div class="h-12 w-28 animate-pulse rounded-full bg-border" aria-hidden="true"></div>
+              <div class="h-12 w-24 animate-pulse rounded-full bg-border" aria-hidden="true"></div>
+            </div>
+          } @else {
+            <div class="flex flex-wrap gap-2 md:gap-3">
+              <button
+                type="button"
+                (click)="setCategory(null)"
+                class="min-h-[48px] rounded-full px-4 py-3 text-sm font-medium text-charcoal transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+                [class.bg-gold]="selectedCategory === null"
+                [class.shadow-md]="selectedCategory === null"
+                [class.bg-white]="selectedCategory !== null"
+                [class.border]="selectedCategory !== null"
+                [class.border-border]="selectedCategory !== null"
+                [class.hover:bg-cream/80]="selectedCategory !== null"
+              >
+                All Products
+              </button>
+              @for (category of state.categories; track category.id ?? category.slug) {
+                <button
+                  type="button"
+                  (click)="setCategory(category.id ?? null)"
+                  class="min-h-[48px] rounded-full px-4 py-3 text-sm font-medium text-charcoal transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+                  [class.bg-gold]="selectedCategory === (category.id ?? '')"
+                  [class.shadow-md]="selectedCategory === (category.id ?? '')"
+                  [class.bg-white]="selectedCategory !== (category.id ?? '')"
+                  [class.border]="selectedCategory !== (category.id ?? '')"
+                  [class.border-border]="selectedCategory !== (category.id ?? '')"
+                  [class.hover:bg-cream/80]="selectedCategory !== (category.id ?? '')"
+                >
+                  {{ category.name }}
+                </button>
+              }
+            </div>
+          }
         }
-      </div>
-    }
+      }
+    </div>
   </div>
 </section>
 
 <!-- Product Grid -->
-<section class="max-w-7xl mx-auto px-4 md:px-8 py-8 md:py-12" aria-label="Product listing">
+<section class="mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-12" aria-label="Product listing">
   @if (productsState$ | async; as state) {
+    <div class="mb-6 flex flex-wrap items-center justify-between gap-3 md:mb-8">
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest text-gold">Collection</p>
+        <h2 class="text-xl font-display font-bold text-charcoal md:text-2xl">
+          Discover Your Perfect Outfit
+        </h2>
+      </div>
+      @if (state.status === 'loaded') {
+        <span class="inline-flex min-h-[40px] items-center rounded-full border border-border bg-white px-4 text-sm font-medium text-text-medium">
+          {{ state.items.length }} products
+        </span>
+      }
+    </div>
+
     @if (state.status === 'error' && state.error) {
       <app-error-display
         [error]="state.error"
@@ -53,12 +97,24 @@
     } @else if (state.status === 'loading') {
       <app-loading-skeleton />
     } @else if (state.items.length === 0) {
-      <p class="text-center text-charcoal font-body py-12">
-        No products found in this category
-      </p>
+      <div class="rounded-2xl border border-dashed border-border bg-bg-primary px-6 py-14 text-center">
+        <p class="text-xl font-display font-semibold text-charcoal">
+          No products found
+        </p>
+        <p class="mx-auto mt-2 max-w-xl text-sm text-text-medium md:text-base">
+          Try selecting a different category to view more styles from our boutique collection.
+        </p>
+        <button
+          type="button"
+          (click)="setCategory(null)"
+          class="mt-6 inline-flex min-h-[48px] items-center justify-center rounded-full bg-gold px-6 py-3 text-sm font-semibold text-charcoal transition-all duration-200 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2"
+        >
+          Show All Products
+        </button>
+      </div>
     } @else {
       <div
-        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+        class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4"
         role="list"
       >
         @for (item of state.items; track item.product.id ?? $index) {

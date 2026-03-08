@@ -4,13 +4,18 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc,
   Timestamp,
 } from '@angular/fire/firestore';
-import { Observable, from, throwError } from 'rxjs';
-import { map, switchMap, catchError } from 'rxjs/operators';
+import { Observable, from, throwError, TimeoutError } from 'rxjs';
+import { map, catchError, timeout, shareReplay, tap } from 'rxjs/operators';
 
 import { AppSettings } from '../models/AppSettings';
+
+/**
+ * Max ms to wait for a Firestore response before treating it as an error.
+ * Reduced from 10s → 5s so users see feedback sooner on slow connections.
+ */
+const FIRESTORE_TIMEOUT_MS = 5_000;
 
 const SETTINGS_COLLECTION = 'settings';
 const SETTINGS_DOC_ID = 'app';
@@ -18,7 +23,10 @@ const SETTINGS_DOC_ID = 'app';
 /**
  * SettingsService: Firestore-backed read/update for app settings.
  * Uses a single document at settings/app.
- * All methods return Observables; uses from() to convert Firestore Promises.
+ *
+ * Settings are cached after the first fetch using shareReplay(1), so multiple
+ * components (Footer, FloatingButton, AdminSettings) all share one network
+ * request instead of each firing their own.
  */
 @Injectable({
   providedIn: 'root',
@@ -26,26 +34,52 @@ const SETTINGS_DOC_ID = 'app';
 export class SettingsService {
   private readonly firestore = inject(Firestore);
 
-  /** Get app settings. Returns null if document does not exist. */
+  /**
+   * In-memory cache of the settings Observable.
+   * - Set on first call to getSettings().
+   * - Cleared on error → allows retryLoad() to re-fetch.
+   * - Cleared after updateSettings() → next read gets fresh data.
+   */
+  private settingsCache$: Observable<AppSettings | null> | null = null;
+
+  /**
+   * Returns app settings, fetching from Firestore only on the first call.
+   * All subsequent callers share the cached result via shareReplay(1).
+   * Returns null if the settings document does not exist yet.
+   */
   getSettings(): Observable<AppSettings | null> {
-    const docRef = doc(this.firestore, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
-    return from(getDoc(docRef)).pipe(
-      map((docSnap) => {
-        if (docSnap.exists()) {
-          return { id: docSnap.id, ...docSnap.data() } as AppSettings;
-        }
-        return null;
-      }),
-      catchError((error) => {
-        console.error('Error fetching settings:', error);
-        return throwError(() => new Error('Failed to fetch settings'));
-      })
-    );
+    if (!this.settingsCache$) {
+      const docRef = doc(this.firestore, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
+      this.settingsCache$ = from(getDoc(docRef)).pipe(
+        timeout(FIRESTORE_TIMEOUT_MS),
+        map((docSnap) => {
+          if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() } as AppSettings;
+          }
+          return null;
+        }),
+        catchError((error) => {
+          // Clear the cache so the next getSettings() call retries the fetch
+          // instead of replaying the same error.
+          this.settingsCache$ = null;
+          const message =
+            error instanceof TimeoutError
+              ? 'Settings request timed out. Check your connection.'
+              : 'Failed to fetch settings';
+          console.error('Error fetching settings:', error);
+          return throwError(() => new Error(message));
+        }),
+        shareReplay(1),
+      );
+    }
+    return this.settingsCache$;
   }
 
   /**
-   * Update app settings. Merges with existing data and sets updatedAt to Timestamp.now().
-   * Uses updateDoc when document exists; setDoc with merge when it doesn't.
+   * Update app settings. Uses setDoc with merge:true which creates the document
+   * if it doesn't exist, or merges into it if it does — no pre-check needed.
+   * Invalidates the settings cache after a successful save so the next
+   * getSettings() call fetches the updated values from Firestore.
    */
   updateSettings(settings: Partial<AppSettings>): Observable<void> {
     const docRef = doc(this.firestore, SETTINGS_COLLECTION, SETTINGS_DOC_ID);
@@ -55,16 +89,19 @@ export class SettingsService {
     };
     delete payload['id'];
 
-    return from(getDoc(docRef)).pipe(
-      switchMap((snap) =>
-        snap.exists()
-          ? from(updateDoc(docRef, payload))
-          : from(setDoc(docRef, payload, { merge: true }))
-      ),
+    return from(setDoc(docRef, payload, { merge: true })).pipe(
+      timeout(FIRESTORE_TIMEOUT_MS),
+      tap(() => {
+        this.settingsCache$ = null;
+      }),
       catchError((error) => {
+        const message =
+          error instanceof TimeoutError
+            ? 'Save timed out. Check your connection and try again.'
+            : 'Failed to update settings';
         console.error('Error updating settings:', error);
-        return throwError(() => new Error('Failed to update settings'));
-      })
+        return throwError(() => new Error(message));
+      }),
     );
   }
 }

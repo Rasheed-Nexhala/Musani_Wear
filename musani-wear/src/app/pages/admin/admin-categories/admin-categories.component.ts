@@ -8,13 +8,14 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { AsyncPipe } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/Category';
 import { slugify } from '../../../utils/slugify';
 import { DeleteConfirmationModalComponent } from '../../../components/admin/delete-confirmation-modal/delete-confirmation-modal.component';
+import { ContentLoaderComponent } from '../../../components/shared/content-loader/content-loader.component';
 import { FocusTrapDirective } from '../../../directives/focus-trap.directive';
 
 /**
@@ -30,6 +31,7 @@ import { FocusTrapDirective } from '../../../directives/focus-trap.directive';
     ReactiveFormsModule,
     AsyncPipe,
     DeleteConfirmationModalComponent,
+    ContentLoaderComponent,
     FocusTrapDirective,
   ],
   templateUrl: './admin-categories.component.html',
@@ -43,7 +45,14 @@ export class AdminCategoriesComponent {
   private readonly refresh$ = new BehaviorSubject(0);
 
   categories$ = this.refresh$.pipe(
-    switchMap(() => this.categoryService.getAllCategories())
+    switchMap(() =>
+      this.categoryService.getAllCategories().pipe(
+        catchError((err) => {
+          console.error('Error fetching categories:', err);
+          return of([] as Category[]);
+        })
+      )
+    )
   );
 
   /** Whether the add/edit modal is visible. */

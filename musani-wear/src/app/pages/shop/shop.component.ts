@@ -11,6 +11,7 @@ import { ProductCardComponent } from '../../components/shared/product-card/produ
 import { ErrorDisplayComponent } from '../../components/shared/error-display/error-display.component';
 import { LoadingSkeletonComponent } from '../../components/shared/loading-skeleton/loading-skeleton.component';
 import { Product } from '../../models/Product';
+import { Category } from '../../models/Category';
 
 /** Product with resolved category name for display in ProductCard. */
 export interface ProductWithCategory {
@@ -68,12 +69,18 @@ export class ShopComponent implements OnInit {
     this.retryTrigger$.pipe(startWith(undefined)),
   ]).pipe(map(([cat]) => cat));
 
-  readonly categories$ = this.categoryService.getAllCategories().pipe(
+  /** Categories with loading state for filter tabs. */
+  readonly categoriesState$ = this.categoryService.getAllCategories().pipe(
+    map((categories) => ({ status: 'loaded' as const, categories })),
+    startWith({ status: 'loading' as const, categories: [] as Category[] }),
     catchError((err) => {
       console.error('Error fetching categories:', err);
-      return of([]);
+      return of({ status: 'error' as const, categories: [] as Category[] });
     })
   );
+
+  /** Resolved categories for product state (used in combineLatest). */
+  private readonly categories$ = this.categoriesState$.pipe(map((s) => s.categories));
 
   /**
    * Products stream: when selectedCategory or retry changes, switchMap to fetch.

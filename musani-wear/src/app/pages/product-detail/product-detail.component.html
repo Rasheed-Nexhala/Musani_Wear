@@ -34,16 +34,19 @@
   </nav>
 
   @if (productState$ | async; as state) {
-    @if (!state.loaded) {
-    <!-- Loading state -->
-    <section class="max-w-7xl mx-auto px-4 py-16" aria-label="Loading product">
-      <div class="flex flex-col items-center justify-center gap-4">
-        <div
-          class="animate-spin rounded-full border-2 border-border border-t-gold w-12 h-12"
-          aria-hidden="true"
-        ></div>
-        <p class="text-charcoal font-body">Loading product...</p>
-      </div>
+    @if (state.error) {
+    <section class="max-w-7xl mx-auto px-4 py-16" aria-label="Error loading product">
+      <app-error-display
+        [error]="state.error"
+        (retry)="onRetry()"
+      />
+    </section>
+    } @else if (!state.loaded) {
+    <section class="max-w-7xl mx-auto px-4 py-16">
+      <app-content-loader
+        label="Loading product"
+        message="Loading product..."
+      />
     </section>
     } @else if (state.product; as product) {
     <!-- Product Section -->
@@ -64,6 +67,7 @@
                 width="600"
                 height="800"
                 loading="eager"
+                (error)="$any($event.target).onerror=null; $any($event.target).src=imagePlaceholder"
                 class="w-full h-full object-cover"
               />
             } @else {
@@ -99,6 +103,7 @@
                     width="64"
                     height="80"
                     loading="lazy"
+                    (error)="$any($event.target).onerror=null; $any($event.target).src=imagePlaceholder"
                     class="w-full h-full object-cover"
                   />
                 </button>
@@ -183,15 +188,19 @@
           }
 
           <!-- WhatsApp Button -->
-          <a
-            [href]="(whatsappUrl$ | async) || '#'"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 w-full bg-whatsapp text-white hover:opacity-90 px-6 py-4 rounded-full font-body font-semibold text-base transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-2 min-h-[48px] disabled:opacity-50 disabled:pointer-events-none"
-            [attr.aria-label]="'Ask availability on WhatsApp'"
-          >
-            Ask Availability on WhatsApp
-          </a>
+          @if (whatsappUrl$ | async; as url) {
+            @if (url) {
+              <a
+                [href]="url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-2 w-full bg-whatsapp text-white hover:opacity-90 px-6 py-4 rounded-full font-body font-semibold text-base transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-whatsapp focus:ring-offset-2 min-h-[48px]"
+                aria-label="Ask availability on WhatsApp"
+              >
+                Ask Availability on WhatsApp
+              </a>
+            }
+          }
 
           <!-- Share Button -->
           @if (canShare) {

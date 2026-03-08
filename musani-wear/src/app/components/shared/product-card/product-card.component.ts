@@ -3,6 +3,10 @@ import { RouterLink } from '@angular/router';
 import { Product } from '../../../models/Product';
 import { formatPrice } from '../../../utils/format-price';
 
+/** Placeholder when product image fails to load. */
+const IMAGE_PLACEHOLDER =
+  'https://placehold.co/600x800/e8e0d5/9a9a9a?text=No+Image';
+
 /**
  * Product card for customer-facing pages (Shop, Category, Home).
  * Displays product image, name, price, category, and color swatches.
@@ -23,4 +27,7 @@ export class ProductCardComponent {
 
   /** Expose formatPrice for template; keeps component logic testable. */
   readonly formatPrice = formatPrice;
+
+  /** Fallback when image fails to load. */
+  readonly imagePlaceholder = IMAGE_PLACEHOLDER;
 }

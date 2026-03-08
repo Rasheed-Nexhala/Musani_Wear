@@ -1,33 +1,58 @@
-<div class="max-w-6xl mx-auto px-4 md:px-8 py-8">
-  <h1 class="text-3xl font-display font-bold text-charcoal mb-8">
-    Business Settings
-  </h1>
+<div class="admin-page">
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Business Settings</h1>
+      <p class="admin-subtitle">Manage brand, contact, and social details shown to customers.</p>
+    </div>
+  </div>
 
-  <div class="bg-white rounded-lg shadow-md border border-border p-6 md:p-8">
+  @if (loadingSettings()) {
+    <app-content-loader
+      label="Loading settings"
+      message="Loading settings..."
+    />
+  } @else if (loadError()) {
+    <div
+      role="alert"
+      aria-live="polite"
+      class="admin-alert-error"
+    >
+      <p class="font-medium mb-2">{{ loadError() }}</p>
+      <button
+        type="button"
+        (click)="retryLoad()"
+        class="inline-flex items-center justify-center bg-error text-white hover:opacity-90 px-4 py-2 rounded-full font-semibold text-sm transition focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2 min-h-[44px]"
+      >
+        Retry
+      </button>
+    </div>
+  } @else {
+  <div class="admin-panel admin-panel-body">
     <form [formGroup]="settingsForm" (ngSubmit)="onSave()" class="space-y-6">
-      @if (errorMessage) {
+      @if (errorMessage()) {
         <div
           role="alert"
           aria-live="polite"
-          class="bg-red-50 border-l-4 border-red-600 px-4 py-3 rounded-md text-red-600 text-sm"
+          class="admin-alert-error"
         >
-          {{ errorMessage }}
+          {{ errorMessage() }}
         </div>
       }
-      @if (successMessage) {
+      @if (successMessage()) {
         <div
           role="status"
           aria-live="polite"
-          class="bg-success/10 border-l-4 border-success px-4 py-3 rounded-md text-success text-sm"
+          class="admin-alert-success"
         >
-          {{ successMessage }}
+          {{ successMessage() }}
         </div>
       }
 
-      <div>
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+        <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Business Profile</h2>
         <label
           for="businessName"
-          class="block text-sm font-medium text-charcoal mb-2"
+          class="admin-label"
         >
           Business Name
         </label>
@@ -35,7 +60,7 @@
           id="businessName"
           type="text"
           formControlName="businessName"
-          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
+          class="admin-input"
           [class.border-red-600]="
             settingsForm.get('businessName')?.invalid &&
             settingsForm.get('businessName')?.touched
@@ -60,134 +85,160 @@
         }
       </div>
 
-      <div>
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+        <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Contact Channels</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div>
+            <label
+              for="whatsappNumber"
+              class="admin-label"
+            >
+              WhatsApp Number
+            </label>
+            <input
+              id="whatsappNumber"
+              type="tel"
+              formControlName="whatsappNumber"
+              placeholder="+1234567890"
+              inputmode="tel"
+              autocomplete="tel"
+              class="admin-input"
+              [class.border-red-600]="
+                settingsForm.get('whatsappNumber')?.invalid &&
+                settingsForm.get('whatsappNumber')?.touched
+              "
+              [attr.aria-invalid]="
+                settingsForm.get('whatsappNumber')?.invalid &&
+                settingsForm.get('whatsappNumber')?.touched
+              "
+              [attr.aria-describedby]="
+                settingsForm.get('whatsappNumber')?.invalid &&
+                settingsForm.get('whatsappNumber')?.touched
+                  ? 'whatsappNumber-error'
+                  : null
+              "
+            />
+            <p class="mt-1 text-sm text-gray-600">
+              Include country code (e.g., +1 for US)
+            </p>
+            @if (
+              settingsForm.get('whatsappNumber')?.invalid &&
+              settingsForm.get('whatsappNumber')?.touched;
+              as _
+            ) {
+              <p id="whatsappNumber-error" class="mt-1 text-sm text-red-600">WhatsApp number is required.</p>
+            }
+          </div>
+
+          <div>
+            <label
+              for="businessEmail"
+              class="admin-label"
+            >
+              Business Email
+            </label>
+            <input
+              id="businessEmail"
+              type="email"
+              formControlName="businessEmail"
+              class="admin-input"
+              [class.border-red-600]="
+                settingsForm.get('businessEmail')?.invalid &&
+                settingsForm.get('businessEmail')?.touched
+              "
+              [attr.aria-invalid]="
+                settingsForm.get('businessEmail')?.invalid &&
+                settingsForm.get('businessEmail')?.touched
+              "
+              [attr.aria-describedby]="
+                settingsForm.get('businessEmail')?.invalid &&
+                settingsForm.get('businessEmail')?.touched
+                  ? 'businessEmail-error'
+                  : null
+              "
+            />
+            @if (
+              settingsForm.get('businessEmail')?.invalid &&
+              settingsForm.get('businessEmail')?.touched;
+              as _
+            ) {
+              <p id="businessEmail-error" class="mt-1 text-sm text-red-600">
+                @if (settingsForm.get('businessEmail')?.errors?.['required']) {
+                  Business email is required.
+                } @else if (settingsForm.get('businessEmail')?.errors?.['email']) {
+                  Please enter a valid email address.
+                }
+              </p>
+            }
+          </div>
+
+          <div>
+            <label
+              for="businessPhone"
+              class="admin-label"
+            >
+              Business Phone
+            </label>
+            <input
+              id="businessPhone"
+              type="tel"
+              formControlName="businessPhone"
+              inputmode="tel"
+              autocomplete="tel"
+              class="admin-input"
+              [class.border-red-600]="
+                settingsForm.get('businessPhone')?.invalid &&
+                settingsForm.get('businessPhone')?.touched
+              "
+              [attr.aria-invalid]="
+                settingsForm.get('businessPhone')?.invalid &&
+                settingsForm.get('businessPhone')?.touched
+              "
+              [attr.aria-describedby]="
+                settingsForm.get('businessPhone')?.invalid &&
+                settingsForm.get('businessPhone')?.touched
+                  ? 'businessPhone-error'
+                  : null
+              "
+            />
+            @if (
+              settingsForm.get('businessPhone')?.invalid &&
+              settingsForm.get('businessPhone')?.touched;
+              as _
+            ) {
+              <p id="businessPhone-error" class="mt-1 text-sm text-red-600">Business phone is required.</p>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-panel border-border/70 bg-bg-primary p-4 md:p-5">
+        <h2 class="text-lg font-display font-semibold text-charcoal mb-4">Social</h2>
         <label
-          for="whatsappNumber"
-          class="block text-sm font-medium text-charcoal mb-2"
+          for="instagramUrl"
+          class="admin-label"
         >
-          WhatsApp Number
+          Instagram URL
         </label>
         <input
-          id="whatsappNumber"
-          type="tel"
-          formControlName="whatsappNumber"
-          placeholder="+1234567890"
-          inputmode="tel"
-          autocomplete="tel"
-          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
-          [class.border-red-600]="
-            settingsForm.get('whatsappNumber')?.invalid &&
-            settingsForm.get('whatsappNumber')?.touched
-          "
-          [attr.aria-invalid]="
-            settingsForm.get('whatsappNumber')?.invalid &&
-            settingsForm.get('whatsappNumber')?.touched
-          "
-          [attr.aria-describedby]="
-            settingsForm.get('whatsappNumber')?.invalid &&
-            settingsForm.get('whatsappNumber')?.touched
-              ? 'whatsappNumber-error'
-              : null
-          "
+          id="instagramUrl"
+          type="url"
+          formControlName="instagramUrl"
+          placeholder="https://instagram.com/yourhandle"
+          class="admin-input"
         />
         <p class="mt-1 text-sm text-gray-600">
-          Include country code (e.g., +1 for US)
+          Optional. Your Instagram profile link (e.g. https://instagram.com/musaniwear)
         </p>
-        @if (
-          settingsForm.get('whatsappNumber')?.invalid &&
-          settingsForm.get('whatsappNumber')?.touched;
-          as _
-        ) {
-          <p id="whatsappNumber-error" class="mt-1 text-sm text-red-600">WhatsApp number is required.</p>
-        }
-      </div>
-
-      <div>
-        <label
-          for="businessEmail"
-          class="block text-sm font-medium text-charcoal mb-2"
-        >
-          Business Email
-        </label>
-        <input
-          id="businessEmail"
-          type="email"
-          formControlName="businessEmail"
-          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
-          [class.border-red-600]="
-            settingsForm.get('businessEmail')?.invalid &&
-            settingsForm.get('businessEmail')?.touched
-          "
-          [attr.aria-invalid]="
-            settingsForm.get('businessEmail')?.invalid &&
-            settingsForm.get('businessEmail')?.touched
-          "
-          [attr.aria-describedby]="
-            settingsForm.get('businessEmail')?.invalid &&
-            settingsForm.get('businessEmail')?.touched
-              ? 'businessEmail-error'
-              : null
-          "
-        />
-        @if (
-          settingsForm.get('businessEmail')?.invalid &&
-          settingsForm.get('businessEmail')?.touched;
-          as _
-        ) {
-          <p id="businessEmail-error" class="mt-1 text-sm text-red-600">
-            @if (settingsForm.get('businessEmail')?.errors?.['required']) {
-              Business email is required.
-            } @else if (settingsForm.get('businessEmail')?.errors?.['email']) {
-              Please enter a valid email address.
-            }
-          </p>
-        }
-      </div>
-
-      <div>
-        <label
-          for="businessPhone"
-          class="block text-sm font-medium text-charcoal mb-2"
-        >
-          Business Phone
-        </label>
-        <input
-          id="businessPhone"
-          type="tel"
-          formControlName="businessPhone"
-          inputmode="tel"
-          autocomplete="tel"
-          class="w-full min-h-[48px] px-4 py-3 rounded-md border-2 border-border focus:border-gold focus:ring-2 focus:ring-gold/20 outline-none transition"
-          [class.border-red-600]="
-            settingsForm.get('businessPhone')?.invalid &&
-            settingsForm.get('businessPhone')?.touched
-          "
-          [attr.aria-invalid]="
-            settingsForm.get('businessPhone')?.invalid &&
-            settingsForm.get('businessPhone')?.touched
-          "
-          [attr.aria-describedby]="
-            settingsForm.get('businessPhone')?.invalid &&
-            settingsForm.get('businessPhone')?.touched
-              ? 'businessPhone-error'
-              : null
-          "
-        />
-        @if (
-          settingsForm.get('businessPhone')?.invalid &&
-          settingsForm.get('businessPhone')?.touched;
-          as _
-        ) {
-          <p id="businessPhone-error" class="mt-1 text-sm text-red-600">Business phone is required.</p>
-        }
       </div>
 
       <button
         type="submit"
         class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px] px-6 py-3 flex items-center justify-center gap-2"
-        [disabled]="loading"
+        [disabled]="saving()"
+        [attr.aria-busy]="saving()"
       >
-        @if (loading) {
+        @if (saving()) {
           <span
             class="inline-block w-5 h-5 rounded-full border-2 border-charcoal border-t-transparent animate-spin"
             aria-hidden="true"
@@ -199,4 +250,5 @@
       </button>
     </form>
   </div>
+  }
 </div>

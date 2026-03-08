@@ -1,6 +1,9 @@
-<div class="max-w-6xl mx-auto px-4 md:px-8 py-8">
-  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-    <h1 class="text-3xl font-display font-bold text-charcoal">Products</h1>
+<div class="admin-page">
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Products</h1>
+      <p class="admin-subtitle">Manage your catalog, pricing, and stock availability.</p>
+    </div>
     <a
       routerLink="/admin/products/new"
       class="btn-primary inline-flex items-center justify-center min-h-[48px] w-fit"
@@ -9,55 +12,40 @@
     </a>
   </div>
 
-  <div class="bg-white rounded-lg shadow-sm overflow-hidden">
+  <div class="admin-panel overflow-hidden">
     @if (products$ | async; as products) {
       @if (products.length > 0) {
-        <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-border">
-            <thead class="bg-cream">
+        <div class="border-b border-border bg-bg-primary px-4 py-3 text-sm text-gray-600 md:px-6">
+          Showing {{ products.length }} product{{ products.length === 1 ? '' : 's' }}
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead class="admin-table-head">
               <tr>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th">
                   Image
                 </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th">
                   Name
                 </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th">
                   Category
                 </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th">
                   Price
                 </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-left text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th">
                   Status
                 </th>
-                <th
-                  scope="col"
-                  class="px-4 py-3 text-right text-sm font-semibold text-charcoal"
-                >
+                <th scope="col" class="admin-th text-right">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody class="divide-y divide-border">
               @for (product of products; track product.id ?? $index) {
-                <tr class="hover:bg-cream/50 transition-colors">
-                  <td class="px-4 py-3">
+                <tr class="admin-row">
+                  <td class="admin-td">
                     @if (product.images.length) {
                       <img
                         [src]="product.images[0]"
@@ -75,16 +63,16 @@
                       </div>
                     }
                   </td>
-                  <td class="px-4 py-3 font-medium text-charcoal">
+                  <td class="admin-td font-medium text-charcoal">
                     {{ product.name }}
                   </td>
-                  <td class="px-4 py-3 text-gray-600">
+                  <td class="admin-td text-gray-600">
                     {{ getCategoryName(product.categoryId) }}
                   </td>
-                  <td class="px-4 py-3 text-gold font-semibold">
+                  <td class="admin-td text-gold font-semibold">
                     {{ formatPrice(product.price) }}
                   </td>
-                  <td class="px-4 py-3">
+                  <td class="admin-td">
                     <span
                       class="inline-block px-3 py-1 rounded-full font-body text-sm font-semibold"
                       [class.bg-success]="product.available"
@@ -95,12 +83,12 @@
                       {{ product.available ? 'In Stock' : 'Out of Stock' }}
                     </span>
                   </td>
-                  <td class="px-4 py-3 text-right">
+                  <td class="admin-td text-right">
                     <div class="flex items-center justify-end gap-2">
                       @if (product.id) {
                         <a
                           [routerLink]="['/admin/products', product.id, 'edit']"
-                          class="text-gold hover:opacity-80 font-medium text-sm min-h-[48px] min-w-[48px] inline-flex items-center justify-center px-3 focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 rounded"
+                          class="admin-link-action"
                           [attr.aria-label]="'Edit ' + product.name"
                         >
                           Edit
@@ -108,7 +96,7 @@
                         <button
                           type="button"
                           (click)="deleteProduct(product)"
-                          class="px-4 py-2 text-sm font-medium text-error hover:bg-error/10 rounded transition min-h-[48px] min-w-[48px] inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-error focus:ring-offset-2"
+                          class="admin-danger-action"
                           [attr.aria-label]="'Delete ' + product.name"
                         >
                           Delete
@@ -122,8 +110,9 @@
           </table>
         </div>
       } @else {
-        <div class="p-12 text-center text-gray-600">
-          <p class="text-lg font-medium mb-2">No products yet.</p>
+        <div class="admin-empty-state m-6">
+          <p class="text-lg font-semibold text-charcoal mb-2">No products yet.</p>
+          <p class="text-sm text-gray-600">Create your first product to start selling on Musani Wear.</p>
           <a
             routerLink="/admin/products/new"
             class="btn-primary inline-flex items-center justify-center mt-4"
@@ -133,13 +122,10 @@
         </div>
       }
     } @else {
-      <div class="p-12 text-center">
-        <div
-          class="inline-block w-8 h-8 rounded-full border-2 border-border border-t-gold animate-spin"
-          aria-hidden="true"
-        ></div>
-        <p class="mt-2 text-gray-600">Loading products…</p>
-      </div>
+      <app-content-loader
+        label="Loading products"
+        message="Loading products…"
+      />
     }
   </div>
 

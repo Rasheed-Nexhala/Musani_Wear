@@ -9,5 +9,7 @@ export interface AppSettings {
   whatsappNumber: string;
   businessEmail: string;
   businessPhone: string;
+  /** Instagram profile URL (e.g. https://instagram.com/musaniwear) */
+  instagramUrl?: string;
   updatedAt: any;
 }

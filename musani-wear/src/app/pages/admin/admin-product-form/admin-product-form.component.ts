@@ -12,6 +12,7 @@ import { Product } from '../../../models/Product';
 import { Color } from '../../../models/Product';
 import { ProductImageUploadComponent } from '../../../components/admin/product-image-upload/product-image-upload.component';
 import { DeleteConfirmationModalComponent } from '../../../components/admin/delete-confirmation-modal/delete-confirmation-modal.component';
+import { ContentLoaderComponent } from '../../../components/shared/content-loader/content-loader.component';
 
 /**
  * Admin Product Form: create or edit a product.
@@ -27,6 +28,7 @@ import { DeleteConfirmationModalComponent } from '../../../components/admin/dele
     RouterLink,
     ProductImageUploadComponent,
     DeleteConfirmationModalComponent,
+    ContentLoaderComponent,
   ],
   templateUrl: './admin-product-form.component.html',
 })
@@ -43,6 +45,9 @@ export class AdminProductFormComponent {
 
   /** Whether we're in edit mode. */
   isEdit = computed(() => !!this.productId());
+
+  /** True while loading product for edit. */
+  loadingProduct = signal(false);
 
   /** Existing image URLs (from loaded product, minus any removed by user). */
   existingImages = signal<string[]>([]);
@@ -93,15 +98,18 @@ export class AdminProductFormComponent {
   }
 
   private loadProduct(id: string): void {
+    this.loadingProduct.set(true);
     this.productService.getProductById(id).subscribe({
       next: (product) => {
         if (product) {
           this.patchForm(product);
           this.existingImages.set(product.images ?? []);
         }
+        this.loadingProduct.set(false);
       },
       error: () => {
         this.errorMessage.set('Failed to load product.');
+        this.loadingProduct.set(false);
       },
     });
   }

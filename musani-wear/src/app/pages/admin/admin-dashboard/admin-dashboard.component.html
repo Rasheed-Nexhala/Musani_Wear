@@ -1,83 +1,89 @@
-<div class="max-w-6xl mx-auto px-4 md:px-8 py-8">
-  <h1 class="text-3xl font-display font-bold text-charcoal mb-8">
-    Admin Dashboard
-  </h1>
+<div class="admin-page">
+  <div class="admin-header">
+    <div>
+      <h1 class="admin-title">Admin Dashboard</h1>
+      <p class="admin-subtitle">
+        Track products, stock health, and quick management actions.
+      </p>
+    </div>
+  </div>
 
+  @if (dashboardState$ | async; as state) {
+    @if (state.loading) {
+      <app-content-loader
+        label="Loading dashboard"
+        message="Loading dashboard..."
+      />
+    } @else {
   <!-- Stats grid -->
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-    @if (totalProducts$ | async; as total) {
-      <app-stats-card
-        label="Total Products"
-        [value]="total"
-        icon="📦"
-      />
-    }
-    @if (inStock$ | async; as inStock) {
-      <app-stats-card
-        label="In Stock"
-        [value]="inStock"
-        icon="✅"
-      />
-    }
-    @if (outOfStock$ | async; as outOfStock) {
-      <app-stats-card
-        label="Out of Stock"
-        [value]="outOfStock"
-        icon="⚠️"
-      />
-    }
-    @if (totalCategories$ | async; as totalCategories) {
-      <app-stats-card
-        label="Categories"
-        [value]="totalCategories"
-        icon="📁"
-      />
-    }
+    <app-stats-card
+      label="Total Products"
+      [value]="state.totalProducts"
+      icon="📦"
+    />
+    <app-stats-card
+      label="In Stock"
+      [value]="state.inStock"
+      icon="✅"
+    />
+    <app-stats-card
+      label="Out of Stock"
+      [value]="state.outOfStock"
+      icon="⚠️"
+    />
+    <app-stats-card
+      label="Categories"
+      [value]="state.totalCategories"
+      icon="📁"
+    />
   </div>
 
   <!-- Quick Actions -->
-  <section class="mb-10">
-    <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
-      Quick Actions
-    </h2>
-    <div class="flex flex-wrap gap-4">
-      <a
-        routerLink="/admin/products"
-        class="btn-primary"
-      >
-        View Products
-      </a>
-      <a
-        routerLink="/admin/products/new"
-        class="btn-primary"
-      >
-        Add Product
-      </a>
-      <a
-        routerLink="/admin/categories"
-        class="btn-secondary"
-      >
-        Manage Categories
-      </a>
-      <a
-        routerLink="/admin/settings"
-        class="btn-secondary"
-      >
-        Settings
-      </a>
+  <section class="admin-panel mb-10">
+    <div class="admin-panel-body">
+      <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
+        Quick Actions
+      </h2>
+      <div class="flex flex-wrap gap-4">
+        <a
+          routerLink="/admin/products"
+          class="btn-primary"
+        >
+          View Products
+        </a>
+        <a
+          routerLink="/admin/products/new"
+          class="btn-primary"
+        >
+          Add Product
+        </a>
+        <a
+          routerLink="/admin/categories"
+          class="btn-secondary"
+        >
+          Manage Categories
+        </a>
+        <a
+          routerLink="/admin/settings"
+          class="btn-secondary"
+        >
+          Settings
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Recent Products -->
-  <section>
-    <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
-      Recent Products
-    </h2>
-    @if (recentProducts$ | async; as recentProducts) {
-      @if (recentProducts.length > 0) {
-        <ul class="bg-white rounded-lg shadow divide-y divide-border">
-          @for (product of recentProducts; track product.id ?? $index) {
-            <li class="p-4 flex justify-between items-center">
+  <section class="admin-panel">
+    <div class="admin-panel-body">
+      <h2 class="text-xl font-display font-semibold text-charcoal mb-4">
+        Recent Products
+      </h2>
+      @if (state.recentProducts.length > 0) {
+        <ul class="rounded-xl border border-border divide-y divide-border">
+          @for (product of state.recentProducts; track product.id ?? $index) {
+            <li class="p-4 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
               <div>
                 <span class="font-semibold text-charcoal">{{ product.name }}</span>
                 <span class="text-gray-600 ml-2">
@@ -97,8 +103,13 @@
           }
         </ul>
       } @else {
-        <p class="text-gray-600">No products yet.</p>
+        <div class="admin-empty-state">
+          <p class="text-lg font-semibold text-charcoal">No recent products yet.</p>
+          <p class="mt-2 text-sm text-gray-600">Add your first product to start seeing activity here.</p>
+        </div>
       }
-    }
+    </div>
   </section>
+    }
+  }
 </div>

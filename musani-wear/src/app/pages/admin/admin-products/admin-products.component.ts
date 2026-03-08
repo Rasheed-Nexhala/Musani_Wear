@@ -1,8 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { BehaviorSubject, of } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 import { ProductService } from '../../../services/product.service';
@@ -11,6 +11,7 @@ import { Product } from '../../../models/Product';
 import { Category } from '../../../models/Category';
 import { formatPrice } from '../../../utils/format-price';
 import { DeleteConfirmationModalComponent } from '../../../components/admin/delete-confirmation-modal/delete-confirmation-modal.component';
+import { ContentLoaderComponent } from '../../../components/shared/content-loader/content-loader.component';
 
 /**
  * Admin Products List: table of all products with edit/delete actions.
@@ -20,7 +21,7 @@ import { DeleteConfirmationModalComponent } from '../../../components/admin/dele
 @Component({
   selector: 'app-admin-products',
   standalone: true,
-  imports: [AsyncPipe, RouterLink, DeleteConfirmationModalComponent],
+  imports: [AsyncPipe, RouterLink, DeleteConfirmationModalComponent, ContentLoaderComponent],
   templateUrl: './admin-products.component.html',
 })
 export class AdminProductsComponent {
@@ -37,7 +38,14 @@ export class AdminProductsComponent {
   productToDelete: Product | null = null;
 
   products$ = this.refresh$.pipe(
-    switchMap(() => this.productService.getAllProducts())
+    switchMap(() =>
+      this.productService.getAllProducts().pipe(
+        catchError((err) => {
+          console.error('Error fetching products:', err);
+          return of([] as Product[]);
+        })
+      )
+    )
   );
 
   /** Categories for category name lookup. */

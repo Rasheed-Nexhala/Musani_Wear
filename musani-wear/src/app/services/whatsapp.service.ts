@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 import { formatPhoneForWhatsApp } from '../utils/format-phone';
 import { buildProductInquiryMessageText } from '../utils/build-whatsapp-message';
@@ -57,6 +57,24 @@ export class WhatsAppService {
    * getProductInquiryUrl(product, 'Blue').subscribe(url => window.open(url))
    */
   /**
+   * Returns a tel: URL for calling the business.
+   * Fetches business phone from SettingsService.
+   *
+   * @returns Observable of tel: URL, or empty string if no phone configured
+   */
+  getCallUrl(): Observable<string> {
+    return this.settingsService.getSettings().pipe(
+      map((settings) => {
+        const phone = settings?.businessPhone?.trim() ?? '';
+        const digits = phone.replace(/\D/g, '');
+        if (digits.length === 0) return '';
+        return digits.startsWith('0') ? `tel:${digits}` : `tel:+${digits}`;
+      }),
+      catchError(() => of(''))
+    );
+  }
+
+  /**
    * Returns a wa.me URL for general inquiries (e.g. from Home page CTA).
    * Fetches business WhatsApp from SettingsService and uses a generic message.
    *
@@ -68,7 +86,8 @@ export class WhatsAppService {
       map((settings) => {
         const phone = settings?.whatsappNumber?.trim() ?? '';
         return phone ? this.getWhatsAppUrl(phone, message) : '';
-      })
+      }),
+      catchError(() => of(''))
     );
   }
 
@@ -91,7 +110,8 @@ export class WhatsAppService {
       map((settings) => {
         const phone = settings?.whatsappNumber?.trim() ?? '';
         return phone ? this.getWhatsAppUrl(phone, message) : '';
-      })
+      }),
+      catchError(() => of(''))
     );
   }
 }

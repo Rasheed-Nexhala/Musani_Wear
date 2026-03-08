@@ -17,8 +17,11 @@ export class App implements OnInit {
   protected readonly title = signal('musani-wear');
 
   ngOnInit(): void {
-    this.seedService.seedCategories().catch((err) => {
-      console.error('Failed to seed categories:', err);
-    });
+    this.seedService
+      .seedCategories()
+      .then(() => this.seedService.seedProducts())
+      .catch((err) => {
+        console.error('Failed to seed data:', err);
+      });
   }
 }
